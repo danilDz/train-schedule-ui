@@ -1,5 +1,6 @@
 import { SignupDto } from "./dto/signup.dto";
 import { SigninDto } from "./dto/signin.dto";
+import Cookies from "js-cookie";
 
 export class ApiService {
   private static url = process.env.REACT_APP_SERVER_URL!;
@@ -31,23 +32,28 @@ export class ApiService {
   static async signout() {
     const response = await fetch(`${this.url}/api/auth/signout`, {
       method: "POST",
-      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`,
+      },
     });
     return await response.json();
   }
 
   static async getUserInfo() {
     const response = await fetch(`${this.url}/api/auth/check`, {
-      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`,
+      },
     });
     return await response.json();
   }
 
   static async getAllTrains() {
     const response = await fetch(`${this.url}/api/trains`, {
-      credentials: "include",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`,
+      },
     });
-    const trains = await response.json();
-    return trains;
+    return await response.json();
   }
 }

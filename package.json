@@ -16,7 +16,6 @@
     "react-router-dom": "^6.21.3",
     "react-scripts": "5.0.1",
     "sass": "^1.70.0",
-    "string-encode-decode": "^1.0.7",
     "typescript": "^4.9.5",
     "validator": "^13.11.0"
   },
