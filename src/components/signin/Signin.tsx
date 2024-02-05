@@ -1,11 +1,10 @@
-import React, { FormEvent, useContext, useRef } from "react";
+import React, { FormEvent, useRef } from "react";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import validator from "validator";
 import cookies from "js-cookie";
 import "./Signin.scss";
 import { ApiService } from "../../services/api.service";
 import { getTokenExpireDate } from "../../utils/token-expire";
-import { AdminContext, AdminDispatchContext } from "../../AdminContext";
 
 ///
 /// FR - Add an ability to NOT remember user with Session Storage instead of Cookie
@@ -16,10 +15,6 @@ export const Signin: React.FunctionComponent = () => {
   const passwordRef = useRef<HTMLInputElement>(null);
 
   const navigate = useNavigate();
-
-  const isAdmin = useContext(AdminContext);
-  console.log(isAdmin);
-  const dispatch = useContext(AdminDispatchContext);
 
   async function onSubmitSignup(event: FormEvent): Promise<void> {
     event.preventDefault();
@@ -38,7 +33,6 @@ export const Signin: React.FunctionComponent = () => {
       console.log(responseObj);
       return;
     }
-    dispatch({ value: responseObj.isAdmin });
     cookies.set("jwt", responseObj.jwt, {
       secure: true,
       expires: getTokenExpireDate(),
@@ -65,7 +59,7 @@ export const Signin: React.FunctionComponent = () => {
     return flag;
   }
 
-  if (isAdmin !== null) return <Navigate to="/" />;
+  if (cookies.get("jwt")) return <Navigate to="/" />;
 
   return (
     <div className="mainDivSignin">

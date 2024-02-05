@@ -1,7 +1,7 @@
 .mainTrainInfoDiv {
   margin-top: 20px;
   width: 100%;
-  height: calc(100vh - 160px);
+  height: calc(100vh - 180px);
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -55,6 +55,19 @@
       p:nth-child(1) {
         color: rgba(240, 141, 242);
       }
+    }
+  }
+
+  .controlsDiv {
+    display: flex;
+    margin-top: 50px;
+    width: 50%;
+    justify-content: space-evenly;
+    .controlBtn {
+      width: 150px;
+    }
+    .controlBtn:hover{
+      cursor: pointer;
     }
   }
 }

@@ -3,4 +3,5 @@ export interface IUserInfo {
   lastName: string;
   email: string;
   id: string;
+  isAdmin: boolean;
 }

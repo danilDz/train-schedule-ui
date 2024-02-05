@@ -10,6 +10,7 @@ import { Spinner } from "../spinner/Spinner";
 export const Train: React.FunctionComponent = () => {
   const { trainId } = useParams();
   const [trainInfo, setTrainInfo] = useState<ITrain>({} as ITrain);
+  const [isAdmin, setIsAdmin] = useState<boolean>(null!);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
@@ -18,14 +19,16 @@ export const Train: React.FunctionComponent = () => {
   useEffect(() => {
     async function fetchTrainInfo() {
       const loadedTrainInfo = await ApiService.getTrainInfoById(trainId!);
-      if (loadedTrainInfo.statusCode) {
+      const user = await ApiService.getUserInfo();
+      if (loadedTrainInfo.statusCode || user.statusCode) {
         setIsLoading(false);
-        if (loadedTrainInfo.statusCode === 403) {
+        if (loadedTrainInfo.statusCode === 403 || user.statusCode === 403) {
           logout();
         }
         setIsError(true);
         return;
       }
+      setIsAdmin(user.isAdmin);
       setTrainInfo(loadedTrainInfo);
       setIsLoading(false);
     }
@@ -94,6 +97,14 @@ export const Train: React.FunctionComponent = () => {
       </div>
       <p>Available seats: {trainInfo.availableSeats}</p>
       <p>Price: ${trainInfo.price}</p>
+      {isAdmin ? (
+        <div className="controlsDiv">
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          <a className="controlBtn">Delete Train</a>
+          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+          <a className="controlBtn">Edit Train</a>
+        </div>
+      ) : null}
     </div>
   );
 };

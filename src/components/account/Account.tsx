@@ -45,6 +45,7 @@ export const Account: React.FunctionComponent = () => {
           <p>First name: {userInfo.firstName}</p>
           <p>Last name: {userInfo.lastName}</p>
           <p>Email address: {userInfo.email}</p>
+          {userInfo.isAdmin ? <p>You are admin!</p> : null}
           <button className="submit" onClick={logout}>
             Log out
           </button>
