@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useContext } from "react";
 import { Navigate, Outlet } from "react-router-dom";
-import cookies from "js-cookie";
 import { Navigation } from "../navigation/Navigation";
 import "./Header.scss";
+import { AdminContext } from "../../AdminContext";
 
 export const Header: React.FunctionComponent = () => {
-  if (!cookies.get("jwt")) return <Navigate to="/signin" />;
+  const isAdmin = useContext(AdminContext);
+  console.log(isAdmin);
+  if (isAdmin === null) return <Navigate to="/signin" />;
   
   return (
     <>

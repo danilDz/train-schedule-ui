@@ -1,10 +1,11 @@
-import React, { FormEvent, useRef } from "react";
+import React, { FormEvent, useRef, useContext } from "react";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import validator from "validator";
 import cookies from "js-cookie";
 import "./Signup.scss";
 import { ApiService } from "../../services/api.service";
 import { getTokenExpireDate } from "../../utils/token-expire";
+import { AdminContext, AdminDispatchContext } from "../../AdminContext";
 
 export const Signup: React.FunctionComponent = () => {
   const firstNameRef = useRef<HTMLInputElement>(null);
@@ -14,6 +15,10 @@ export const Signup: React.FunctionComponent = () => {
   const confirmPasswordRef = useRef<HTMLInputElement>(null);
 
   const navigate = useNavigate();
+
+  const isAdmin = useContext(AdminContext);
+  console.log(isAdmin);
+  const dispatch = useContext(AdminDispatchContext);
 
   async function onSubmitSignup(event: FormEvent): Promise<void> {
     event.preventDefault();
@@ -36,6 +41,7 @@ export const Signup: React.FunctionComponent = () => {
       console.log(jwt);
       return;
     }
+    dispatch({ value: false });
     cookies.set("jwt", jwt, { secure: true, expires: getTokenExpireDate() });
     (event.target as HTMLFormElement).reset();
     navigate("/");
@@ -79,7 +85,7 @@ export const Signup: React.FunctionComponent = () => {
     return flag;
   }
 
-  if (cookies.get("jwt")) return <Navigate to="/" />;
+  if (isAdmin !== null) return <Navigate to="/" />;
 
   return (
     <div className="mainDivSignup">

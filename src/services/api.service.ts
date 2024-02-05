@@ -11,7 +11,7 @@ export class ApiService {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ ...userInfo, isAdmin: true }),
+      body: JSON.stringify({ ...userInfo, isAdmin: false }),
     });
     if (response.status === 201) return await response.text();
     return await response.json();
@@ -25,7 +25,6 @@ export class ApiService {
       },
       body: JSON.stringify({ ...userInfo }),
     });
-    if (response.status === 201) return await response.text();
     return await response.json();
   }
 
