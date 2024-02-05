@@ -7,6 +7,7 @@ import { Signin } from "./components/signin/Signin";
 import { Signup } from "./components/signup/Signup";
 import { Account } from "./components/account/Account";
 import { NotFound } from "./components/notFound/NotFound";
+import { Train } from "./components/train/Train";
 
 const App: React.FunctionComponent = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FunctionComponent = () => {
       <Routes>
         <Route path="/" element={<Header />}>
           <Route index element={<Trains />} />
+          <Route path="trains/:trainId" element={<Train/>}/>
           <Route path="account" element={<Account />} />
           <Route path="*" element={<NotFound />} />
         </Route>

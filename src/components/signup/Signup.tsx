@@ -2,8 +2,9 @@ import React, { FormEvent, useRef } from "react";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import validator from "validator";
 import cookies from "js-cookie";
-import { ApiService } from "../../services/api.service";
 import "./Signup.scss";
+import { ApiService } from "../../services/api.service";
+import { getTokenExpireDate } from "../../utils/token-expire";
 
 export const Signup: React.FunctionComponent = () => {
   const firstNameRef = useRef<HTMLInputElement>(null);
@@ -35,7 +36,7 @@ export const Signup: React.FunctionComponent = () => {
       console.log(jwt);
       return;
     }
-    cookies.set("jwt", jwt, { secure: true, expires: 1 / 24,  });
+    cookies.set("jwt", jwt, { secure: true, expires: getTokenExpireDate() });
     (event.target as HTMLFormElement).reset();
     navigate("/");
   }

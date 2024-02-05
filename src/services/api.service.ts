@@ -56,4 +56,13 @@ export class ApiService {
     });
     return await response.json();
   }
+
+  static async getTrainInfoById(id: string) {
+    const response = await fetch(`${this.url}/api/trains/${id}`, {
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`
+      }
+    });
+    return await response.json();
+  }
 }

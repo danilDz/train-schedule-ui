@@ -1,28 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { redirect, useNavigate } from "react-router-dom";
-import cookies from "js-cookie";
-import { ApiService } from "../../services/api.service";
 import "./Account.scss";
+import profileImageSrc from "../../resources/img/profile.png";
+import { ApiService } from "../../services/api.service";
 import { Spinner } from "../spinner/Spinner";
 import { Error } from "../error/Error";
 import { IUserInfo } from "./interfaces/user-info.interface";
+import { useLogout } from "../../utils/logout";
 
 export const Account: React.FunctionComponent = () => {
   const [userInfo, setUserInfo] = useState({} as IUserInfo);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
-  const navigate = useNavigate();
+  const logout = useLogout();
 
   useEffect(() => {
     async function getUserInfo() {
-      setIsLoading(true);
-      setIsError(false);
       const user = await ApiService.getUserInfo();
       if (user.statusCode) {
         setIsLoading(false);
         if (user.statusCode === 403) {
-          logout();
+          logout()
         }
         setIsError(true);
         return;
@@ -34,12 +32,6 @@ export const Account: React.FunctionComponent = () => {
     getUserInfo();
   }, []);
 
-  async function logout() {
-    await ApiService.signout();
-    cookies.remove("jwt");
-    navigate("/signin");
-  }
-
   if (isError) return <Error />;
   if (isLoading) return <Spinner />;
 
@@ -47,7 +39,7 @@ export const Account: React.FunctionComponent = () => {
     <div className="mainDivAccount">
       <div className="user">
         <div className="image">
-          <img src="profile.png" alt="userImage" />
+          <img src={profileImageSrc} alt="userImage" />
         </div>
         <div className="contactInfo">
           <p>First name: {userInfo.firstName}</p>

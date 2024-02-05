@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
-import cookies from "js-cookie";
 import "./TrainsList.scss";
-import { ITrain } from "./interfaces/trains-list.interface";
+import { ITrain } from "../train/interfaces/train.interface";
 import { ApiService } from "../../services/api.service";
 import { Error } from "../error/Error";
 import { Spinner } from "../spinner/Spinner";
-import { useNavigate } from "react-router-dom";
+import { TrainItem } from "../trainItem/TrainItem";
+import { useLogout } from "../../utils/logout";
+
+///
+/// FR - Add a pagination
+///
 
 export const Trains: React.FunctionComponent = () => {
   const [trainsList, setTrainsList] = useState<ITrain[]>([] as ITrain[]);
@@ -16,19 +20,15 @@ export const Trains: React.FunctionComponent = () => {
   const [isError, setIsError] = useState(false);
   // const [isMoreLoading, setIsMoreLoading] = useState(false);
 
-  const navigate = useNavigate();
+  const logout = useLogout();
 
   useEffect(() => {
     async function fetchTrainsList() {
-      setIsLoading(true);
-      setIsError(false);
       const loadedTrainsList = await ApiService.getAllTrains();
       if (loadedTrainsList.statusCode) {
         setIsLoading(false);
         if (loadedTrainsList.statusCode === 403) {
-          await ApiService.signout();
-          cookies.remove("jwt");
-          navigate("/signin");
+          logout();
         }
         setIsError(true);
         return;
@@ -39,10 +39,6 @@ export const Trains: React.FunctionComponent = () => {
 
     fetchTrainsList();
   }, []);
-
-  function onTrainClick(event: React.MouseEvent<HTMLDivElement>) {
-    console.log(event);
-  }
 
   if (isError) return <Error />;
   if (isLoading) return <Spinner />;
@@ -66,28 +62,14 @@ export const Trains: React.FunctionComponent = () => {
               arrivalDate.toTimeString().split(":").slice(0, 2).join(":");
 
             return (
-              <div key={train.id} className="train" onClick={onTrainClick}>
-                <div className="trainPlain">
-                  <div>
-                    <p>{departureDatetime}</p>
-                    <p>{train.departureCity}</p>
-                  </div>
-                  <span>
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 25 25">
-                      <path
-                        fill="rgba(240, 141, 242)"
-                        d="m17.5 5.999-.707.707 5.293 5.293H1v1h21.086l-5.294 5.295.707.707L24 12.499l-6.5-6.5z"
-                        data-name="Right"
-                      />
-                    </svg>
-                  </span>
-                  <div>
-                    <p>{arrivalDatetime}</p>
-                    <p>{train.arrivalCity}</p>
-                  </div>
-                </div>
-                <div className="trainHover">Details</div>
-              </div>
+              <TrainItem
+                key={train.id}
+                id={train.id}
+                departureDate={departureDatetime}
+                departureCity={train.departureCity}
+                arrivalDate={arrivalDatetime}
+                arrivalCity={train.arrivalCity}
+              />
             );
           })}
           {/* {isMoreLoading ? <Spinner /> : null}

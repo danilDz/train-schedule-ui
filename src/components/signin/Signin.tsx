@@ -2,8 +2,13 @@ import React, { FormEvent, useRef } from "react";
 import { Navigate, useNavigate, Link } from "react-router-dom";
 import validator from "validator";
 import cookies from "js-cookie";
-import { ApiService } from "../../services/api.service";
 import "./Signin.scss";
+import { ApiService } from "../../services/api.service";
+import { getTokenExpireDate } from "../../utils/token-expire";
+
+///
+/// FR - Add an ability to NOT remember user with Session Storage instead of Cookie
+///
 
 export const Signin: React.FunctionComponent = () => {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -28,7 +33,7 @@ export const Signin: React.FunctionComponent = () => {
       console.log(jwt);
       return;
     }
-    cookies.set("jwt", jwt, { secure: true, expires: 1 / 24 });
+    cookies.set("jwt", jwt, { secure: true, expires: getTokenExpireDate() });
     (event.target as HTMLFormElement).reset();
     navigate("/");
   }
