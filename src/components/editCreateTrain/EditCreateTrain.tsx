@@ -1,11 +1,12 @@
 import React, { FormEvent, useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import "./EditCreateTrain.scss";
 import { ITrain } from "../train/interfaces/train.interface";
 import { ApiService } from "../../services/api.service";
 import { useLogout } from "../../utils/logout";
 import { Error } from "../error/Error";
 import { Spinner } from "../spinner/Spinner";
+import { NotFound } from "../notFound/NotFound";
 
 export const EditCreateTrain: React.FunctionComponent = () => {
   const { trainId } = useParams();
@@ -15,8 +16,20 @@ export const EditCreateTrain: React.FunctionComponent = () => {
 
   const logout = useLogout();
 
+  const navigate = useNavigate();
+
   useEffect(() => {
+    async function fetchUser(value?: boolean) {
+      const user = await ApiService.getUserInfo();
+      if (!user.isAdmin) navigate("/notfound");
+      if (value) {
+        setIsLoading(false);
+        setTrainInfo({} as ITrain);
+      }
+    }
+
     async function fetchTrainInfo() {
+      await fetchUser();
       const fetchedTrain = await ApiService.getTrainInfoById(trainId!);
       if (fetchedTrain.statusCode) {
         setIsLoading(false);
@@ -31,10 +44,7 @@ export const EditCreateTrain: React.FunctionComponent = () => {
     }
 
     if (trainId) fetchTrainInfo();
-    else {
-      setIsLoading(false);
-      setTrainInfo({} as ITrain);
-    }
+    else fetchUser(true);
   }, [trainId]);
 
   function onSubmitForm(event: FormEvent) {
