@@ -23,7 +23,7 @@ export const TrainItem: React.FunctionComponent<ITrainItemProps> = (
           </svg>
         </span>
         <div>
-          <p>{props.departureDate}</p>
+          <p>{props.arrivalDate}</p>
           <p>{props.arrivalCity}</p>
         </div>
       </div>

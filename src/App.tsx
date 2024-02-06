@@ -8,6 +8,7 @@ import { Signup } from "./components/signup/Signup";
 import { Account } from "./components/account/Account";
 import { NotFound } from "./components/notFound/NotFound";
 import { Train } from "./components/train/Train";
+import { EditCreateTrain } from "./components/editCreateTrain/EditCreateTrain";
 
 ///
 /// FR - Add integration with react-toastify
@@ -20,6 +21,8 @@ const App: React.FunctionComponent = () => {
         <Route path="/" element={<Header />}>
           <Route index element={<Trains />} />
           <Route path="trains/:trainId" element={<Train />} />
+          <Route path="trains/edit/:trainId" element={<EditCreateTrain />} />
+          <Route path="trains/create" element={<EditCreateTrain />} />
           <Route path="account" element={<Account />} />
           <Route path="*" element={<NotFound />} />
         </Route>

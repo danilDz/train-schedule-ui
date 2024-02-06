@@ -15,7 +15,7 @@ export const Signup: React.FunctionComponent = () => {
 
   const navigate = useNavigate();
 
-  async function onSubmitSignup(event: FormEvent): Promise<void> {
+  async function onSubmitSignup(event: FormEvent) {
     event.preventDefault();
     removeInvalidClass();
 
