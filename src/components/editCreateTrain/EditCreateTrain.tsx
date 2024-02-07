@@ -58,20 +58,8 @@ export const EditCreateTrain: React.FunctionComponent = () => {
   let arrivalDate = "";
   let departureDate = "";
   if (trainId) {
-    arrivalDate =
-      new Date(trainInfo.arrivalDate).toISOString().slice(0, 10) +
-      "T" +
-      new Date(trainInfo.arrivalDate)
-        .toLocaleString()
-        .split(", ")[1]
-        .slice(0, 5);
-    departureDate =
-      new Date(trainInfo.departureDate).toISOString().slice(0, 10) +
-      "T" +
-      new Date(trainInfo.departureDate)
-        .toLocaleString()
-        .split(", ")[1]
-        .slice(0, 5);
+    arrivalDate = trainInfo.arrivalDate.slice(0, 16);
+    departureDate = trainInfo.departureDate.slice(0, 16);
   }
 
   return (

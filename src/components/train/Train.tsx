@@ -73,11 +73,7 @@ export const Train: React.FunctionComponent = () => {
       .slice(1)
       .join(" ") +
     ", " +
-    new Date(trainInfo.arrivalDate)
-      .toTimeString()
-      .split(":")
-      .slice(0, 2)
-      .join(":");
+    trainInfo.arrivalDate.slice(11, 16);
   const departureDate =
     new Date(trainInfo.departureDate)
       .toDateString()
@@ -85,11 +81,7 @@ export const Train: React.FunctionComponent = () => {
       .slice(1)
       .join(" ") +
     ", " +
-    new Date(trainInfo.departureDate)
-      .toTimeString()
-      .split(":")
-      .slice(0, 2)
-      .join(":");
+    trainInfo.departureDate.slice(11, 16);
 
   return (
     <>

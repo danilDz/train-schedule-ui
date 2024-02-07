@@ -55,11 +55,11 @@ export const Trains: React.FunctionComponent = () => {
             const departureDatetime =
               departureDate.toDateString().split(" ").slice(1).join(" ") +
               ", " +
-              departureDate.toTimeString().split(":").slice(0, 2).join(":");
+              train.departureDate.slice(11, 16);
             const arrivalDatetime =
               arrivalDate.toDateString().split(" ").slice(1).join(" ") +
               ", " +
-              arrivalDate.toTimeString().split(":").slice(0, 2).join(":");
+              train.arrivalDate.slice(11, 16);
 
             return (
               <TrainItem
