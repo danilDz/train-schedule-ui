@@ -55,6 +55,10 @@
           -webkit-appearance: none;
         }
 
+        .invalidInput {
+          border: 1px solid red;
+        }
+
         .submit {
           margin-top: 25px;
           background-color: #08d;

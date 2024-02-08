@@ -1,21 +1,29 @@
-import React, { FormEvent, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import "./EditCreateTrain.scss";
-import { ITrain } from "../train/interfaces/train.interface";
+import "../../App.scss";
 import { ApiService } from "../../services/api.service";
 import { useLogout } from "../../utils/logout";
 import { Error } from "../error/Error";
 import { Spinner } from "../spinner/Spinner";
-import { NotFound } from "../notFound/NotFound";
+
+const initialInputState = {
+  departureDate: "",
+  departureCity: "",
+  arrivalDate: "",
+  arrivalCity: "",
+  availableSeats: "",
+  price: "",
+};
 
 export const EditCreateTrain: React.FunctionComponent = () => {
+  const location = useLocation();
   const { trainId } = useParams();
-  const [trainInfo, setTrainInfo] = useState({} as ITrain);
+  const [inputTrainInfo, setInputTrainInfo] = useState(initialInputState);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
 
   const logout = useLogout();
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -24,7 +32,7 @@ export const EditCreateTrain: React.FunctionComponent = () => {
       if (!user.isAdmin) navigate("/notfound");
       if (value) {
         setIsLoading(false);
-        setTrainInfo({} as ITrain);
+        setInputTrainInfo(initialInputState);
       }
     }
 
@@ -39,28 +47,49 @@ export const EditCreateTrain: React.FunctionComponent = () => {
         setIsError(true);
         return;
       }
-      setTrainInfo(fetchedTrain);
+      setInputTrainInfo({
+        ...fetchedTrain,
+        departureDate: fetchedTrain.departureDate.slice(0, 16),
+        arrivalDate: fetchedTrain.arrivalDate.slice(0, 16),
+      });
       setIsLoading(false);
     }
 
     if (trainId) fetchTrainInfo();
     else fetchUser(true);
-  }, [trainId]);
+  }, [location.pathname]);
 
   function onSubmitForm(event: FormEvent) {
     event.preventDefault();
-    console.log(event);
+    removeInvalidClass();
+    if (!validateInputs()) return;
+    if (trainId) {
+      console.log("Edit");
+    } else {
+      console.log("Create");
+    }
+  }
+
+  function validateInputs(): boolean {
+    let flag = true;
+    return flag;
+  }
+
+  function removeInvalidClass() {
+    for (const [key, value] of Object.entries(inputTrainInfo)) {
+      document.querySelector(`#${key}`)?.classList.remove("invalidInput");
+    }
+  }
+
+  function changeInputTrainInfo(event: ChangeEvent, type: string) {
+    setInputTrainInfo((prevState) => ({
+      ...prevState,
+      [type]: (event.target as HTMLInputElement).value,
+    }));
   }
 
   if (isError) return <Error />;
   if (isLoading) return <Spinner />;
-
-  let arrivalDate = "";
-  let departureDate = "";
-  if (trainId) {
-    arrivalDate = trainInfo.arrivalDate.slice(0, 16);
-    departureDate = trainInfo.departureDate.slice(0, 16);
-  }
 
   return (
     <div className="mainEditCreateTrainDiv">
@@ -73,14 +102,20 @@ export const EditCreateTrain: React.FunctionComponent = () => {
                 type="text"
                 name="departureCity"
                 id="departureCity"
-                defaultValue={trainId ? trainInfo.departureCity : ""}
+                onChange={(event) =>
+                  changeInputTrainInfo(event, "departureCity")
+                }
+                value={inputTrainInfo.departureCity}
               />
               <label htmlFor="departureDate">Departure Date</label>
               <input
                 type="datetime-local"
                 name="departureDate"
                 id="departureDate"
-                defaultValue={trainId ? departureDate : ""}
+                onChange={(event) =>
+                  changeInputTrainInfo(event, "departureDate")
+                }
+                value={inputTrainInfo.departureDate}
                 min={new Date().toISOString().slice(0, 10) + "T00:00"}
               />
             </div>
@@ -90,14 +125,16 @@ export const EditCreateTrain: React.FunctionComponent = () => {
                 type="text"
                 name="arrivalCity"
                 id="arrivalCity"
-                defaultValue={trainId ? trainInfo.arrivalCity : ""}
+                onChange={(event) => changeInputTrainInfo(event, "arrivalCity")}
+                value={inputTrainInfo.arrivalCity}
               />
               <label htmlFor="arrivalDate">Arrival Date</label>
               <input
                 type="datetime-local"
                 name="arrivalDate"
                 id="arrivalDate"
-                defaultValue={trainId ? arrivalDate : ""}
+                onChange={(event) => changeInputTrainInfo(event, "arrivalDate")}
+                value={inputTrainInfo.arrivalDate}
                 min={new Date().toISOString().slice(0, 10) + "T00:00"}
               />
             </div>
@@ -107,14 +144,18 @@ export const EditCreateTrain: React.FunctionComponent = () => {
                 type="number"
                 name="availableSeats"
                 id="availableSeats"
-                defaultValue={trainId ? trainInfo.availableSeats : ""}
+                onChange={(event) =>
+                  changeInputTrainInfo(event, "availableSeats")
+                }
+                value={inputTrainInfo.availableSeats}
               />
               <label htmlFor="price">Price ($)</label>
               <input
                 type="number"
                 name="price"
                 id="price"
-                defaultValue={trainId ? trainInfo.price : ""}
+                onChange={(event) => changeInputTrainInfo(event, "price")}
+                value={inputTrainInfo.price}
               />
             </div>
           </div>
