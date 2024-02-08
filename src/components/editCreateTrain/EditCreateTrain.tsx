@@ -1,7 +1,7 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import _ from "lodash";
 import "./EditCreateTrain.scss";
-import "../../App.scss";
 import { ApiService } from "../../services/api.service";
 import { useLogout } from "../../utils/logout";
 import { Error } from "../error/Error";
@@ -22,6 +22,7 @@ export const EditCreateTrain: React.FunctionComponent = () => {
   const [inputTrainInfo, setInputTrainInfo] = useState(initialInputState);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
+  const [fetchedTrainInfo, setFetchedTrainInfo] = useState(initialInputState);
 
   const logout = useLogout();
   const navigate = useNavigate();
@@ -52,6 +53,11 @@ export const EditCreateTrain: React.FunctionComponent = () => {
         departureDate: fetchedTrain.departureDate.slice(0, 16),
         arrivalDate: fetchedTrain.arrivalDate.slice(0, 16),
       });
+      setFetchedTrainInfo({
+        ...fetchedTrain,
+        departureDate: fetchedTrain.departureDate.slice(0, 16),
+        arrivalDate: fetchedTrain.arrivalDate.slice(0, 16),
+      });
       setIsLoading(false);
     }
 
@@ -59,19 +65,101 @@ export const EditCreateTrain: React.FunctionComponent = () => {
     else fetchUser(true);
   }, [location.pathname]);
 
-  function onSubmitForm(event: FormEvent) {
+  async function onSubmitForm(event: FormEvent) {
     event.preventDefault();
     removeInvalidClass();
     if (!validateInputs()) return;
+    if (_.isEqual(fetchedTrainInfo, inputTrainInfo)) {
+      console.log("equal");
+      navigate("/");
+      return;
+    }
+    setIsLoading(true);
+    let train;
     if (trainId) {
-      console.log("Edit");
+      let counter = 0;
+      for (let i = 1; i < Object.values(fetchedTrainInfo).length; i++) {
+        if (
+          Object.values(fetchedTrainInfo)[i] ===
+          Object.values(inputTrainInfo)[i]
+        )
+          counter++;
+      }
+      let method = "PATCH";
+      if (!counter) method = "PUT";
+      train = await ApiService.updateTrainById(
+        {
+          ...inputTrainInfo,
+          price: parseInt(inputTrainInfo.price),
+          availableSeats: parseInt(inputTrainInfo.availableSeats),
+        },
+        trainId,
+        method
+      );
     } else {
-      console.log("Create");
+      train = await ApiService.createTrain({
+        ...inputTrainInfo,
+        price: parseInt(inputTrainInfo.price),
+        availableSeats: parseInt(inputTrainInfo.availableSeats),
+      });
+    }
+    if (train.statusCode) {
+      setIsLoading(false);
+      setIsError(true);
+    } else {
+      setIsLoading(false);
+      navigate("/");
     }
   }
 
   function validateInputs(): boolean {
     let flag = true;
+    if (
+      inputTrainInfo.departureCity.length < 3 ||
+      inputTrainInfo.departureCity.length > 30
+    ) {
+      flag = false;
+      document.querySelector("#departureCity")?.classList.add("invalidInput");
+    }
+    if (
+      inputTrainInfo.arrivalCity.length < 3 ||
+      inputTrainInfo.arrivalCity.length > 30
+    ) {
+      flag = false;
+      document.querySelector("#arrivalCity")?.classList.add("invalidInput");
+    }
+    if (
+      !inputTrainInfo.availableSeats.toString().length ||
+      parseInt(inputTrainInfo.availableSeats) < 1 ||
+      parseInt(inputTrainInfo.availableSeats) > 300
+    ) {
+      flag = false;
+      document.querySelector("#availableSeats")?.classList.add("invalidInput");
+    }
+    if (
+      !inputTrainInfo.price.toString().length ||
+      parseInt(inputTrainInfo.price) < 1 ||
+      parseInt(inputTrainInfo.price) > 1000
+    ) {
+      flag = false;
+      document.querySelector("#price")?.classList.add("invalidInput");
+    }
+    if (!inputTrainInfo.arrivalDate.length) {
+      flag = false;
+      document.querySelector("#arrivalDate")?.classList.add("invalidInput");
+    }
+    if (!inputTrainInfo.departureDate.length) {
+      flag = false;
+      document.querySelector("#departureDate")?.classList.add("invalidInput");
+    }
+    if (
+      new Date(inputTrainInfo.arrivalDate) <=
+      new Date(inputTrainInfo.departureDate)
+    ) {
+      flag = false;
+      document.querySelector("#arrivalDate")?.classList.add("invalidInput");
+      document.querySelector("#departureDate")?.classList.add("invalidInput");
+    }
     return flag;
   }
 

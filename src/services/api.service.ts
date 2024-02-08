@@ -1,6 +1,7 @@
 import { SignupDto } from "./dto/signup.dto";
 import { SigninDto } from "./dto/signin.dto";
 import Cookies from "js-cookie";
+import { IInputTrain } from "../components/editCreateTrain/interfaces/input-train.interface";
 
 export class ApiService {
   private static url = process.env.REACT_APP_SERVER_URL!;
@@ -71,6 +72,34 @@ export class ApiService {
       headers: {
         Authorization: `Bearer ${Cookies.get("jwt")}`,
       },
+    });
+    return await response.json();
+  }
+
+  static async createTrain(trainInfo: IInputTrain) {
+    const response = await fetch(`${this.url}/api/trains`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(trainInfo),
+    });
+    return await response.json();
+  }
+
+  static async updateTrainById(
+    trainInfo: Partial<IInputTrain>,
+    trainId: string,
+    method: string
+  ) {
+    const response = await fetch(`${this.url}/api/trains/${trainId}`, {
+      method,
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(trainInfo),
     });
     return await response.json();
   }
