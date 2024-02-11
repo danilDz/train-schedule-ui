@@ -1,5 +1,6 @@
 import React, { FormEvent, useRef } from "react";
 import { Navigate, useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import validator from "validator";
 import cookies from "js-cookie";
 import "./Signup.scss";
@@ -34,10 +35,12 @@ export const Signup: React.FunctionComponent = () => {
     });
     if (jwt.statusCode) {
       console.log(jwt);
+      toast.error("Something went wrong!");
       return;
     }
     cookies.set("jwt", jwt, { secure: true, expires: getTokenExpireDate() });
     (event.target as HTMLFormElement).reset();
+    toast.success("You successfully signed up!");
     navigate("/");
   }
 

@@ -1,5 +1,6 @@
 import React, { FormEvent, useRef } from "react";
 import { Navigate, useNavigate, Link } from "react-router-dom";
+import { toast } from "react-toastify";
 import validator from "validator";
 import cookies from "js-cookie";
 import "./Signin.scss";
@@ -31,6 +32,7 @@ export const Signin: React.FunctionComponent = () => {
     });
     if (responseObj.statusCode) {
       console.log(responseObj);
+      toast.error("Something went wrong!");
       return;
     }
     cookies.set("jwt", responseObj.jwt, {
@@ -38,6 +40,7 @@ export const Signin: React.FunctionComponent = () => {
       expires: getTokenExpireDate(),
     });
     (event.target as HTMLFormElement).reset();
+    toast.success("You successfully logged in!");
     navigate("/");
   }
 

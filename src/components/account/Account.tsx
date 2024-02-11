@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import "./Account.scss";
 import profileImageSrc from "../../resources/img/profile.png";
 import { ApiService } from "../../services/api.service";
@@ -22,6 +23,7 @@ export const Account: React.FunctionComponent = () => {
         if (user.statusCode === 403) {
           logout()
         }
+        toast.error("Something went wrong!");
         setIsError(true);
         return;
       }

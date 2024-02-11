@@ -1,5 +1,6 @@
 import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import _ from "lodash";
 import "./EditCreateTrain.scss";
 import { ApiService } from "../../services/api.service";
@@ -45,6 +46,7 @@ export const EditCreateTrain: React.FunctionComponent = () => {
         if (fetchedTrain.statusCode === 403) {
           logout();
         }
+        toast.error("Something went wrong!");
         setIsError(true);
         return;
       }
@@ -70,7 +72,7 @@ export const EditCreateTrain: React.FunctionComponent = () => {
     removeInvalidClass();
     if (!validateInputs()) return;
     if (_.isEqual(fetchedTrainInfo, inputTrainInfo)) {
-      console.log("equal");
+      toast.success("Train was updated!");
       navigate("/");
       return;
     }
@@ -105,8 +107,11 @@ export const EditCreateTrain: React.FunctionComponent = () => {
     }
     if (train.statusCode) {
       setIsLoading(false);
+      if (train.statusCode === 403) logout();
+      toast.error("Something went wrong!");
       setIsError(true);
     } else {
+      toast.success(`Train was ${trainId ? "updated" : "created"}!`);
       setIsLoading(false);
       navigate("/");
     }

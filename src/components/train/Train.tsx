@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import "./Train.scss";
 import { ITrain } from "./interfaces/train.interface";
 import { ApiService } from "../../services/api.service";
@@ -26,6 +27,7 @@ export const Train: React.FunctionComponent = () => {
         if (loadedTrainInfo.statusCode === 403 || user.statusCode === 403) {
           logout();
         }
+        toast.error("Something went wrong!");
         setIsError(true);
         return;
       }
@@ -58,7 +60,17 @@ export const Train: React.FunctionComponent = () => {
   async function onDeleteTrain() {
     changeModalVisibility("none");
     setIsLoading(true);
-    await ApiService.deleteTrainById(trainId!);
+    const response = await ApiService.deleteTrainById(trainId!);
+    if (response.statusCode) {
+      setIsLoading(false);
+      if (response.statusCode === 403) {
+        logout();
+      }
+      toast.error("Something went wrong!");
+      setIsError(true);
+      return;
+    }
+    toast.success("Train was deleted!");
     setIsLoading(false);
     navigate("/");
   }

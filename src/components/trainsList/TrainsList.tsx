@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import "./TrainsList.scss";
 import { ITrain } from "../train/interfaces/train.interface";
 import { ApiService } from "../../services/api.service";
@@ -51,6 +52,7 @@ export const Trains: React.FunctionComponent = () => {
       if (loadedTrainsList.statusCode === 403) {
         logout();
       }
+      toast.error("Something went wrong!");
       setIsError(true);
       return;
     }
