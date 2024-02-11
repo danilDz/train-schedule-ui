@@ -20,20 +20,21 @@
     text-decoration: none;
     transition: all 0.5s;
     margin-bottom: 50px;
+
+    &:hover {
+      color: rgb(3, 22, 38);
+      background-color: rgba(240, 141, 242);
+      cursor: pointer;
+      svg {
+        path {
+          fill: rgb(3, 22, 38);
+        }
+      }
+    }
+
     svg {
       path {
         transition: all 0.5s;
-      }
-    }
-  }
-
-  a:hover {
-    color: rgb(3, 22, 38);
-    background-color: rgba(240, 141, 242);
-    cursor: pointer;
-    svg {
-      path {
-        fill: rgb(3, 22, 38);
       }
     }
   }
@@ -109,30 +110,27 @@
         text-decoration: none;
         transition: all 0.5s;
         border: 1px solid;
-      }
-
-      .modalControlBtn:hover {
-        cursor: pointer;
+        &:hover {
+          cursor: pointer;
+        }
       }
 
       .cancel {
         border-color: #08d;
         color: #08d;
-      }
-
-      .cancel:hover {
-        background-color: #08d;
-        color: rgb(3, 22, 38);
+        &:hover {
+          background-color: #08d;
+          color: rgb(3, 22, 38);
+        }
       }
 
       .delete {
         border-color: rgb(255, 0, 140);
         color: rgb(255, 0, 140);
-      }
-
-      .delete:hover {
-        background-color: rgb(255, 0, 140);
-        color: rgb(3, 22, 38);
+        &:hover {
+          background-color: rgb(255, 0, 140);
+          color: rgb(3, 22, 38);
+        }
       }
     }
   }

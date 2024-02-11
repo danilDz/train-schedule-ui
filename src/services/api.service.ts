@@ -48,12 +48,15 @@ export class ApiService {
     return await response.json();
   }
 
-  static async getAllTrains() {
-    const response = await fetch(`${this.url}/api/trains`, {
-      headers: {
-        Authorization: `Bearer ${Cookies.get("jwt")}`,
-      },
-    });
+  static async getAllTrains(limit: number, offset: number) {
+    const response = await fetch(
+      `${this.url}/api/trains?limit=${limit}&offset=${offset}`,
+      {
+        headers: {
+          Authorization: `Bearer ${Cookies.get("jwt")}`,
+        },
+      }
+    );
     return await response.json();
   }
 

@@ -14,5 +14,55 @@
     width: 50%;
     display: flex;
     flex-direction: column;
+    align-items: center;
+  }
+
+  .loadMoreBtn {
+    width: 17%;
+    height: 40px;
+    border: 1px solid rgba(240, 141, 242);
+    border-radius: 10px;
+    font-size: 18px;
+    color: rgba(240, 141, 242);
+    background-color: transparent;
+    margin-bottom: 80px;
+    transition: all 0.5s;
+    &:hover {
+      cursor: pointer;
+      background-color: rgba(240, 141, 242);
+      color: rgb(3, 22, 38);
+    }
+  }
+
+  .toTopBtn {
+    visibility: hidden;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    bottom: 30px;
+    right: 40px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    font-size: 18px;
+    color: rgba(240, 141, 242);
+    background-color: transparent;
+    border: 1px solid rgba(240, 141, 242);
+    transition: all 0.5s;
+
+    path {
+      transition: all 0.5s;
+    }
+    
+    &:hover {
+      cursor: pointer;
+      background-color: rgba(240, 141, 242);
+      color: rgb(3, 22, 38);
+      path {
+        fill: rgb(3, 22, 38);
+      }
+    }
   }
 }

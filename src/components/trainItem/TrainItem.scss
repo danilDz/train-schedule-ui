@@ -6,6 +6,22 @@
   margin-top: 80px;
   display: flex;
 
+  &:nth-child(1) {
+    margin-top: 20px;
+  }
+  
+  &:nth-last-child(1) {
+    margin-bottom: 80px;
+  }
+  
+  &:hover {
+    cursor: pointer;
+    a {
+      visibility: visible;
+      opacity: 1;
+    }
+  }
+
   .trainPlain {
     width: 100%;
     height: 100%;
@@ -51,21 +67,5 @@
       font-size: 26px;
       color: rgb(3, 22, 38);
     }
-  }
-}
-
-.train:nth-child(1) {
-  margin-top: 20px;
-}
-
-.train:nth-last-child(1) {
-  margin-bottom: 100px;
-}
-
-.train:hover {
-  cursor: pointer;
-  a {
-    visibility: visible;
-    opacity: 1;
   }
 }

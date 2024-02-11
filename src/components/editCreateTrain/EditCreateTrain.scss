@@ -71,10 +71,9 @@
           height: 50px;
           text-align: center;
           width: 30%;
-        }
-
-        .submit:active {
-          background-color: #06b;
+          &:active {
+            background-color: #06b;
+          }
         }
       }
     }

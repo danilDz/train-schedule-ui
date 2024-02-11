@@ -7,8 +7,8 @@
   a {
     text-decoration: none;
     color: rgba(240, 141, 242);
-  }
-  a:hover {
-    color: rgb(116, 54, 117);
+    &:hover {
+      color: rgb(116, 54, 117);
+    }
   }
 }
