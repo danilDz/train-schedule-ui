@@ -20,8 +20,14 @@ export const Signin: React.FunctionComponent = () => {
   async function onSubmitSignup(event: FormEvent) {
     event.preventDefault();
     removeInvalidClass();
+    const validationResult = validateUserInput();
 
-    if (validateUserInput() === false) return;
+    if (validationResult.length) {
+      for (const err of validationResult) {
+        toast.error(err);
+      }
+      return;
+    }
 
     const email = emailRef.current!.value,
       password = passwordRef.current!.value;
@@ -31,8 +37,7 @@ export const Signin: React.FunctionComponent = () => {
       password,
     });
     if (responseObj.statusCode) {
-      console.log(responseObj);
-      toast.error("Something went wrong!");
+      toast.error(responseObj.message);
       return;
     }
     cookies.set("jwt", responseObj.jwt, {
@@ -49,17 +54,17 @@ export const Signin: React.FunctionComponent = () => {
     passwordRef.current!.classList.remove("invalidInput");
   }
 
-  function validateUserInput(): boolean {
-    let flag = true;
+  function validateUserInput(): string[] {
+    let arr = [] as string[];
     if (!validator.isEmail(emailRef.current!.value)) {
       emailRef.current!.classList.add("invalidInput");
-      flag = false;
+      arr.push("Invalid email address!");
     }
     if (passwordRef.current!.value.length < 4) {
       passwordRef.current!.classList.add("invalidInput");
-      flag = false;
+      arr.push("Password must be at least 4 symbols!");
     }
-    return flag;
+    return arr;
   }
 
   if (cookies.get("jwt")) return <Navigate to="/" />;

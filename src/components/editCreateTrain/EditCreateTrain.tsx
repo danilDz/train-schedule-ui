@@ -70,7 +70,15 @@ export const EditCreateTrain: React.FunctionComponent = () => {
   async function onSubmitForm(event: FormEvent) {
     event.preventDefault();
     removeInvalidClass();
-    if (!validateInputs()) return;
+
+    const validationResult = validateInputs();
+    if (validationResult.length) {
+      for (const err of validationResult) {
+        toast.error(err);
+      }
+      return;
+    }
+
     if (_.isEqual(fetchedTrainInfo, inputTrainInfo)) {
       toast.success("Train was updated!");
       navigate("/");
@@ -108,7 +116,7 @@ export const EditCreateTrain: React.FunctionComponent = () => {
     if (train.statusCode) {
       setIsLoading(false);
       if (train.statusCode === 403) logout();
-      toast.error("Something went wrong!");
+      toast.error(train.message);
       setIsError(true);
     } else {
       toast.success(`Train was ${trainId ? "updated" : "created"}!`);
@@ -117,55 +125,55 @@ export const EditCreateTrain: React.FunctionComponent = () => {
     }
   }
 
-  function validateInputs(): boolean {
-    let flag = true;
+  function validateInputs(): string[] {
+    let arr = [] as string[];
     if (
       inputTrainInfo.departureCity.length < 3 ||
       inputTrainInfo.departureCity.length > 30
     ) {
-      flag = false;
       document.querySelector("#departureCity")?.classList.add("invalidInput");
+      arr.push("Departure City length must be between 3 and 30 symbols!");
     }
     if (
       inputTrainInfo.arrivalCity.length < 3 ||
       inputTrainInfo.arrivalCity.length > 30
     ) {
-      flag = false;
       document.querySelector("#arrivalCity")?.classList.add("invalidInput");
+      arr.push("Arrival City length must be between 3 and 30 symbols!");
     }
     if (
       !inputTrainInfo.availableSeats.toString().length ||
       parseInt(inputTrainInfo.availableSeats) < 1 ||
       parseInt(inputTrainInfo.availableSeats) > 300
     ) {
-      flag = false;
       document.querySelector("#availableSeats")?.classList.add("invalidInput");
+      arr.push("Available Seats number must be between 1 and 300!");
     }
     if (
       !inputTrainInfo.price.toString().length ||
       parseInt(inputTrainInfo.price) < 1 ||
       parseInt(inputTrainInfo.price) > 1000
     ) {
-      flag = false;
       document.querySelector("#price")?.classList.add("invalidInput");
+      arr.push("Price number must be between 1 and 1000!");
     }
     if (!inputTrainInfo.arrivalDate.length) {
-      flag = false;
       document.querySelector("#arrivalDate")?.classList.add("invalidInput");
+      arr.push("Arrival Date is not set!");
     }
     if (!inputTrainInfo.departureDate.length) {
-      flag = false;
       document.querySelector("#departureDate")?.classList.add("invalidInput");
+      arr.push("Departure Date is not set!");
     }
     if (
       new Date(inputTrainInfo.arrivalDate) <=
       new Date(inputTrainInfo.departureDate)
     ) {
-      flag = false;
       document.querySelector("#arrivalDate")?.classList.add("invalidInput");
       document.querySelector("#departureDate")?.classList.add("invalidInput");
+      arr.push("Arrival Date must be greater that Departure Date!");
     }
-    return flag;
+    return arr;
   }
 
   function removeInvalidClass() {

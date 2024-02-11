@@ -19,8 +19,14 @@ export const Signup: React.FunctionComponent = () => {
   async function onSubmitSignup(event: FormEvent) {
     event.preventDefault();
     removeInvalidClass();
+    const validationResult = validateUserInput();
 
-    if (validateUserInput() === false) return;
+    if (validationResult.length) {
+      for (const err of validationResult) {
+        toast.error(err);
+      }
+      return;
+    }
 
     const firstName = firstNameRef.current!.value,
       lastName = lastNameRef.current!.value,
@@ -34,8 +40,7 @@ export const Signup: React.FunctionComponent = () => {
       password,
     });
     if (jwt.statusCode) {
-      console.log(jwt);
-      toast.error("Something went wrong!");
+      toast.error(jwt.message);
       return;
     }
     cookies.set("jwt", jwt, { secure: true, expires: getTokenExpireDate() });
@@ -52,34 +57,34 @@ export const Signup: React.FunctionComponent = () => {
     confirmPasswordRef.current!.classList.remove("invalidInput");
   }
 
-  function validateUserInput(): boolean {
-    let flag = true;
+  function validateUserInput(): string[] {
+    let arr = [] as string[];
     if (firstNameRef.current!.value.length < 3) {
       firstNameRef.current!.classList.add("invalidInput");
-      flag = false;
+      arr.push("First name must be at least 3 symbols!");
     }
     if (lastNameRef.current!.value.length < 3) {
       lastNameRef.current!.classList.add("invalidInput");
-      flag = false;
+      arr.push("First name must be at least 3 symbols!");
     }
     if (!validator.isEmail(emailRef.current!.value)) {
       emailRef.current!.classList.add("invalidInput");
-      flag = false;
+      arr.push("Invalid email address!");
     }
     if (passwordRef.current!.value.length < 4) {
       passwordRef.current!.classList.add("invalidInput");
-      flag = false;
+      arr.push("Password name must be at least 4 symbols!");
     }
     if (confirmPasswordRef.current!.value.length < 4) {
       confirmPasswordRef.current!.classList.add("invalidInput");
-      flag = false;
+      arr.push("Confirm password name must be at least 4 symbols!");
     }
     if (passwordRef.current!.value !== confirmPasswordRef.current!.value) {
       passwordRef.current!.classList.add("invalidInput");
       confirmPasswordRef.current!.classList.add("invalidInput");
-      flag = false;
+      arr.push("Password and confirm password must be the same!");
     }
-    return flag;
+    return arr;
   }
 
   if (cookies.get("jwt")) return <Navigate to="/" />;
