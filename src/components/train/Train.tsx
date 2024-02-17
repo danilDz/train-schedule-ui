@@ -7,6 +7,7 @@ import { ApiService } from "../../services/api.service";
 import { useLogout } from "../../utils/logout";
 import { Error } from "../error/Error";
 import { Spinner } from "../spinner/Spinner";
+import { statusCodesForLogout } from "../../variables";
 
 export const Train: React.FunctionComponent = () => {
   const { trainId } = useParams();
@@ -24,7 +25,10 @@ export const Train: React.FunctionComponent = () => {
       const user = await ApiService.getUserInfo();
       if (loadedTrainInfo.statusCode || user.statusCode) {
         setIsLoading(false);
-        if (loadedTrainInfo.statusCode === 403 || user.statusCode === 403) {
+        if (
+          statusCodesForLogout.includes(loadedTrainInfo.statusCode) ||
+          statusCodesForLogout.includes(user.statusCode)
+        ) {
           logout();
         }
         toast.error("Something went wrong!");
@@ -63,7 +67,7 @@ export const Train: React.FunctionComponent = () => {
     const response = await ApiService.deleteTrainById(trainId!);
     if (response.statusCode) {
       setIsLoading(false);
-      if (response.statusCode === 403) {
+      if (statusCodesForLogout.includes(response.statusCode)) {
         logout();
       }
       toast.error("Something went wrong!");

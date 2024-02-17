@@ -7,6 +7,7 @@ import { ApiService } from "../../services/api.service";
 import { useLogout } from "../../utils/logout";
 import { Error } from "../error/Error";
 import { Spinner } from "../spinner/Spinner";
+import { statusCodesForLogout } from "../../variables";
 
 const initialInputState = {
   departureDate: "",
@@ -31,6 +32,7 @@ export const EditCreateTrain: React.FunctionComponent = () => {
   useEffect(() => {
     async function fetchUser(value?: boolean) {
       const user = await ApiService.getUserInfo();
+      if (statusCodesForLogout.includes(user?.statusCode)) logout();
       if (!user.isAdmin) navigate("/notfound");
       if (value) {
         setIsLoading(false);
@@ -43,7 +45,7 @@ export const EditCreateTrain: React.FunctionComponent = () => {
       const fetchedTrain = await ApiService.getTrainInfoById(trainId!);
       if (fetchedTrain.statusCode) {
         setIsLoading(false);
-        if (fetchedTrain.statusCode === 403) {
+        if (statusCodesForLogout.includes(fetchedTrain.statusCode)) {
           logout();
         }
         toast.error("Something went wrong!");
@@ -115,7 +117,7 @@ export const EditCreateTrain: React.FunctionComponent = () => {
     }
     if (train.statusCode) {
       setIsLoading(false);
-      if (train.statusCode === 403) logout();
+      if (statusCodesForLogout.includes(train.statusCode)) logout();
       toast.error(train.message);
       setIsError(true);
     } else {

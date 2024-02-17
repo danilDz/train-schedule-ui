@@ -7,6 +7,7 @@ import { Spinner } from "../spinner/Spinner";
 import { Error } from "../error/Error";
 import { IUserInfo } from "./interfaces/user-info.interface";
 import { useLogout } from "../../utils/logout";
+import { statusCodesForLogout } from "../../variables";
 
 export const Account: React.FunctionComponent = () => {
   const [userInfo, setUserInfo] = useState({} as IUserInfo);
@@ -20,8 +21,8 @@ export const Account: React.FunctionComponent = () => {
       const user = await ApiService.getUserInfo();
       if (user.statusCode) {
         setIsLoading(false);
-        if (user.statusCode === 403) {
-          logout()
+        if (statusCodesForLogout.includes(user.statusCode)) {
+          logout();
         }
         toast.error("Something went wrong!");
         setIsError(true);

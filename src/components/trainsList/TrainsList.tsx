@@ -7,6 +7,7 @@ import { Error } from "../error/Error";
 import { Spinner } from "../spinner/Spinner";
 import { TrainItem } from "../trainItem/TrainItem";
 import { useLogout } from "../../utils/logout";
+import { statusCodesForLogout } from "../../variables";
 
 export const Trains: React.FunctionComponent = () => {
   const [trainsList, setTrainsList] = useState<ITrain[]>([] as ITrain[]);
@@ -49,7 +50,7 @@ export const Trains: React.FunctionComponent = () => {
     if (loadedTrainsList.statusCode) {
       setIsLoading(false);
       setIsMoreLoading(false);
-      if (loadedTrainsList.statusCode === 403) {
+      if (statusCodesForLogout.includes(loadedTrainsList.statusCode)) {
         logout();
       }
       toast.error("Something went wrong!");
