@@ -328,10 +328,11 @@ export class ApiService {
     return await response.json();
   }
 
-  static async getMyBookings() {
-    const response = await fetch(`${this.url}/api/bookings/my`, {
-      headers: { Authorization: `Bearer ${Cookies.get("jwt")}` },
-    });
+  static async getMyBookings(page = 1, limit = 5) {
+    const response = await fetch(
+      `${this.url}/api/bookings/my?page=${page}&limit=${limit}`,
+      { headers: { Authorization: `Bearer ${Cookies.get("jwt")}` } },
+    );
     return await response.json();
   }
 

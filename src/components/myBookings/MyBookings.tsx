@@ -7,6 +7,8 @@ import { Spinner } from "../spinner/Spinner";
 import { useLogout } from "../../utils/logout";
 import { statusCodesForLogout } from "../../variables";
 
+const PAGE_SIZE = 5;
+
 type BookingStatus =
   | "PENDING_PAYMENT"
   | "CONFIRMED"
@@ -61,24 +63,29 @@ export const MyBookings: React.FC = () => {
   const [bookings, setBookings] = useState<IBooking[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(0);
   const logout = useLogout();
   const navigate = useNavigate();
 
-  useEffect(() => {
-    fetchBookings();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
 
-  async function fetchBookings() {
+  useEffect(() => {
+    fetchBookings(page);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
+
+  async function fetchBookings(p: number) {
     setIsLoading(true);
-    const data = await ApiService.getMyBookings();
+    const data = await ApiService.getMyBookings(p, PAGE_SIZE);
     if (data?.statusCode) {
       if (statusCodesForLogout.includes(data.statusCode)) logout();
       toast.error("Failed to load bookings.");
       setIsLoading(false);
       return;
     }
-    setBookings(Array.isArray(data) ? data : []);
+    setBookings(Array.isArray(data?.data) ? data.data : []);
+    setTotal(data?.total ?? 0);
     setIsLoading(false);
   }
 
@@ -92,7 +99,15 @@ export const MyBookings: React.FC = () => {
       return;
     }
     toast.success("Booking cancelled.");
-    fetchBookings();
+    // If the current page becomes empty after cancellation, go back one page
+    const newTotal = total - 1;
+    const newTotalPages = Math.max(1, Math.ceil(newTotal / PAGE_SIZE));
+    const nextPage = Math.min(page, newTotalPages);
+    if (nextPage !== page) {
+      setPage(nextPage);
+    } else {
+      fetchBookings(page);
+    }
   }
 
   async function handleRetryPayment(booking: IBooking) {
@@ -200,12 +215,44 @@ export const MyBookings: React.FC = () => {
                     onClick={() => handleCancel(booking.id)}
                     disabled={cancellingId === booking.id}
                   >
-                    {cancellingId === booking.id ? "Processing…" : "Request Refund"}
+                    {cancellingId === booking.id
+                      ? "Processing…"
+                      : "Request Refund"}
                   </button>
                 )}
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className="myBookings__pagination">
+          <button
+            className="myBookings__pageBtn"
+            onClick={() => setPage((p) => p - 1)}
+            disabled={page === 1}
+          >
+            ‹
+          </button>
+
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+            <button
+              key={p}
+              className={`myBookings__pageBtn${page === p ? " myBookings__pageBtn--active" : ""}`}
+              onClick={() => setPage(p)}
+            >
+              {p}
+            </button>
+          ))}
+
+          <button
+            className="myBookings__pageBtn"
+            onClick={() => setPage((p) => p + 1)}
+            disabled={page === totalPages}
+          >
+            ›
+          </button>
         </div>
       )}
     </div>

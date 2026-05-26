@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 import "./Dashboard.scss";
 import { ApiService } from "../../services/api.service";
 import { Spinner } from "../spinner/Spinner";
@@ -28,9 +27,20 @@ export const Dashboard: React.FC = () => {
     async function fetchStats() {
       const data = await ApiService.getDashboardStats();
       if (data.statusCode || typeof data !== "object" || data === null) {
-        if (data?.statusCode && statusCodesForLogout.includes(data.statusCode)) logout();
+        if (data?.statusCode && statusCodesForLogout.includes(data.statusCode))
+          logout();
         // Endpoint unavailable or empty DB — show zeros rather than an error
-        setStats({ totalTrains: 0, totalStations: 0, delayedTrains: 0, cancelledTrains: 0, activeRoutes: 0, totalBookings: 0, successfulPayments: 0, pendingPayments: 0, occupancyRate: 0 });
+        setStats({
+          totalTrains: 0,
+          totalStations: 0,
+          delayedTrains: 0,
+          cancelledTrains: 0,
+          activeRoutes: 0,
+          totalBookings: 0,
+          successfulPayments: 0,
+          pendingPayments: 0,
+          occupancyRate: 0,
+        });
         setIsLoading(false);
         return;
       }
@@ -64,22 +74,6 @@ export const Dashboard: React.FC = () => {
           <span className="statValue">{stats?.cancelledTrains ?? "—"}</span>
           <span className="statLabel">Cancelled</span>
         </div>
-        <div className="statCard">
-          <span className="statValue">{stats?.totalBookings ?? "—"}</span>
-          <span className="statLabel">Total Bookings</span>
-        </div>
-        <div className="statCard statCard--confirmed">
-          <span className="statValue">{stats?.successfulPayments ?? "—"}</span>
-          <span className="statLabel">Confirmed Bookings</span>
-        </div>
-        <div className="statCard statCard--pending">
-          <span className="statValue">{stats?.pendingPayments ?? "—"}</span>
-          <span className="statLabel">Pending Payments</span>
-        </div>
-        <div className="statCard">
-          <span className="statValue">{stats?.occupancyRate ?? "—"}%</span>
-          <span className="statLabel">Seat Occupancy</span>
-        </div>
       </div>
 
       <div className="dashboardLinks">
@@ -96,7 +90,6 @@ export const Dashboard: React.FC = () => {
           <span>Search Journeys</span>
         </Link>
       </div>
-
     </div>
   );
 };
