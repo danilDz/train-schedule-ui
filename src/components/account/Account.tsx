@@ -48,7 +48,20 @@ export const Account: React.FunctionComponent = () => {
           <p>First name: {userInfo.firstName}</p>
           <p>Last name: {userInfo.lastName}</p>
           <p>Email address: {userInfo.email}</p>
-          {userInfo.isAdmin ? <p>You are admin!</p> : null}
+          {userInfo.role ? (
+            <p>
+              Role:{" "}
+              <strong>
+                {userInfo.role === "ADMIN"
+                  ? "🛡️ Admin"
+                  : userInfo.role === "DISPATCHER"
+                  ? "🚦 Dispatcher"
+                  : "🎫 Passenger"}
+              </strong>
+            </p>
+          ) : userInfo.isAdmin ? (
+            <p>You are admin!</p>
+          ) : null}
           <button className="submit" onClick={logout}>
             Log out
           </button>

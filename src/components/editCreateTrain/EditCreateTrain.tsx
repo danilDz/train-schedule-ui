@@ -1,4 +1,10 @@
-import React, { ChangeEvent, FormEvent, useEffect, useState } from "react";
+import React, {
+  ChangeEvent,
+  FormEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import _ from "lodash";
@@ -7,7 +13,52 @@ import { ApiService } from "../../services/api.service";
 import { useLogout } from "../../utils/logout";
 import { Error } from "../error/Error";
 import { Spinner } from "../spinner/Spinner";
+import { RouteBuilder } from "./RouteBuilder";
+import { IRouteStop } from "./interfaces/input-train.interface";
 import { statusCodesForLogout } from "../../variables";
+
+interface StationOption {
+  id: string;
+  name: string;
+  city: string;
+  code: string;
+}
+
+interface CityAutocompleteProps {
+  id: string;
+  displayValue: string;
+  onInputChange: (text: string) => void;
+  onSelect: (station: StationOption) => void;
+  suggestions: StationOption[];
+}
+
+const CityAutocomplete: React.FC<CityAutocompleteProps> = ({
+  id,
+  displayValue,
+  onInputChange,
+  onSelect,
+  suggestions,
+}) => (
+  <div className="cityAutocomplete">
+    <input
+      id={id}
+      type="text"
+      autoComplete="off"
+      value={displayValue}
+      onChange={(e) => onInputChange(e.target.value)}
+    />
+    {suggestions.length > 0 && (
+      <ul className="citySuggestionsList">
+        {suggestions.map((s) => (
+          <li key={s.id} onMouseDown={() => onSelect(s)}>
+            <span className="csName">{s.name}</span>
+            <span className="csCity"> — {s.city}</span>
+          </li>
+        ))}
+      </ul>
+    )}
+  </div>
+);
 
 const initialInputState = {
   departureDate: "",
@@ -22,6 +73,20 @@ export const EditCreateTrain: React.FunctionComponent = () => {
   const location = useLocation();
   const { trainId } = useParams();
   const [inputTrainInfo, setInputTrainInfo] = useState(initialInputState);
+  const [stops, setStops] = useState<IRouteStop[]>([]);
+  const [originalStopIds, setOriginalStopIds] = useState<string[]>([]);
+
+  const [departureCityInput, setDepartureCityInput] = useState("");
+  const [departureSuggestions, setDepartureSuggestions] = useState<
+    StationOption[]
+  >([]);
+  const [arrivalCityInput, setArrivalCityInput] = useState("");
+  const [arrivalSuggestions, setArrivalSuggestions] = useState<StationOption[]>(
+    [],
+  );
+  const debounceDepCity = useRef<ReturnType<typeof setTimeout>>();
+  const debounceArrCity = useRef<ReturnType<typeof setTimeout>>();
+
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [fetchedTrainInfo, setFetchedTrainInfo] = useState(initialInputState);
@@ -29,11 +94,21 @@ export const EditCreateTrain: React.FunctionComponent = () => {
   const logout = useLogout();
   const navigate = useNavigate();
 
+  useEffect(
+    () => () => {
+      clearTimeout(debounceDepCity.current);
+      clearTimeout(debounceArrCity.current);
+    },
+    [],
+  );
+
   useEffect(() => {
     async function fetchUser(value?: boolean) {
       const user = await ApiService.getUserInfo();
       if (statusCodesForLogout.includes(user?.statusCode)) logout();
-      if (!user.isAdmin) navigate("/notfound");
+      const userRole = user.role ?? (user.isAdmin ? "ADMIN" : "PASSENGER");
+      if (userRole !== "ADMIN")
+        navigate("/notfound");
       if (value) {
         setIsLoading(false);
         setInputTrainInfo(initialInputState);
@@ -62,6 +137,21 @@ export const EditCreateTrain: React.FunctionComponent = () => {
         departureDate: fetchedTrain.departureDate.slice(0, 16),
         arrivalDate: fetchedTrain.arrivalDate.slice(0, 16),
       });
+      setDepartureCityInput(fetchedTrain.departureCity);
+      setArrivalCityInput(fetchedTrain.arrivalCity);
+      if (Array.isArray(fetchedTrain.stops)) {
+        const mapped: IRouteStop[] = fetchedTrain.stops.map((s: any) => ({
+          id: s.id,
+          stationId: s.stationId,
+          stationName: s.station?.name ?? "",
+          arrivalTime: s.arrivalTime ?? "",
+          departureTime: s.departureTime ?? "",
+          platform: s.platform ?? undefined,
+          stopOrder: s.stopOrder,
+        }));
+        setStops(mapped);
+        setOriginalStopIds(mapped.map((s) => s.id!).filter(Boolean));
+      }
       setIsLoading(false);
     }
 
@@ -106,7 +196,7 @@ export const EditCreateTrain: React.FunctionComponent = () => {
           availableSeats: parseInt(inputTrainInfo.availableSeats),
         },
         trainId,
-        method
+        method,
       );
     } else {
       train = await ApiService.createTrain({
@@ -121,9 +211,49 @@ export const EditCreateTrain: React.FunctionComponent = () => {
       toast.error(train.message);
       setIsError(true);
     } else {
+      // Sync stops after train is saved
+      await syncStops(
+        train.id ?? trainId!,
+        stops,
+        trainId ? originalStopIds : [],
+      );
       toast.success(`Train was ${trainId ? "updated" : "created"}!`);
       setIsLoading(false);
       navigate("/");
+    }
+  }
+
+  async function syncStops(
+    trainId: string,
+    currentStops: IRouteStop[],
+    prevStopIds: string[],
+  ) {
+    const currentIds = currentStops
+      .map((s) => s.id)
+      .filter(Boolean) as string[];
+
+    // Delete stops removed from the list
+    for (const origId of prevStopIds) {
+      if (!currentIds.includes(origId)) {
+        await ApiService.deleteTrainStop(origId);
+      }
+    }
+
+    // Create or update stops
+    for (const stop of currentStops) {
+      if (!stop.stationId) continue; // skip incomplete stops
+      const payload = {
+        stationId: stop.stationId,
+        arrivalTime: stop.arrivalTime || undefined,
+        departureTime: stop.departureTime || undefined,
+        stopOrder: stop.stopOrder,
+        platform: stop.platform || undefined,
+      };
+      if (stop.id) {
+        await ApiService.updateTrainStop(stop.id, payload);
+      } else {
+        await ApiService.addTrainStop(trainId, payload);
+      }
     }
   }
 
@@ -134,14 +264,14 @@ export const EditCreateTrain: React.FunctionComponent = () => {
       inputTrainInfo.departureCity.length > 30
     ) {
       document.querySelector("#departureCity")?.classList.add("invalidInput");
-      arr.push("Departure City length must be between 3 and 30 symbols!");
+      arr.push("Please select a departure city from the station suggestions!");
     }
     if (
       inputTrainInfo.arrivalCity.length < 3 ||
       inputTrainInfo.arrivalCity.length > 30
     ) {
       document.querySelector("#arrivalCity")?.classList.add("invalidInput");
-      arr.push("Arrival City length must be between 3 and 30 symbols!");
+      arr.push("Please select an arrival city from the station suggestions!");
     }
     if (
       !inputTrainInfo.availableSeats.toString().length ||
@@ -179,9 +309,27 @@ export const EditCreateTrain: React.FunctionComponent = () => {
   }
 
   function removeInvalidClass() {
-    for (const [key, value] of Object.entries(inputTrainInfo)) {
+    for (const key of Object.keys(inputTrainInfo)) {
       document.querySelector(`#${key}`)?.classList.remove("invalidInput");
     }
+  }
+
+  function searchCityStations(
+    query: string,
+    setSuggestions: React.Dispatch<React.SetStateAction<StationOption[]>>,
+    debounceRef: React.MutableRefObject<
+      ReturnType<typeof setTimeout> | undefined
+    >,
+  ) {
+    clearTimeout(debounceRef.current);
+    if (query.length < 2) {
+      setSuggestions([]);
+      return;
+    }
+    debounceRef.current = setTimeout(async () => {
+      const res = await ApiService.searchStations(query);
+      setSuggestions(Array.isArray(res?.data) ? res.data : []);
+    }, 300);
   }
 
   function changeInputTrainInfo(event: ChangeEvent, type: string) {
@@ -201,14 +349,27 @@ export const EditCreateTrain: React.FunctionComponent = () => {
           <div className="formSubDiv">
             <div>
               <label htmlFor="departureCity">Departure City</label>
-              <input
-                type="text"
-                name="departureCity"
+              <CityAutocomplete
                 id="departureCity"
-                onChange={(event) =>
-                  changeInputTrainInfo(event, "departureCity")
-                }
-                value={inputTrainInfo.departureCity}
+                displayValue={departureCityInput}
+                suggestions={departureSuggestions}
+                onInputChange={(text) => {
+                  setDepartureCityInput(text);
+                  setInputTrainInfo((p) => ({ ...p, departureCity: "" }));
+                  searchCityStations(
+                    text,
+                    setDepartureSuggestions,
+                    debounceDepCity,
+                  );
+                }}
+                onSelect={(station) => {
+                  setDepartureCityInput(station.name);
+                  setInputTrainInfo((p) => ({
+                    ...p,
+                    departureCity: station.name,
+                  }));
+                  setDepartureSuggestions([]);
+                }}
               />
               <label htmlFor="departureDate">Departure Date</label>
               <input
@@ -224,12 +385,27 @@ export const EditCreateTrain: React.FunctionComponent = () => {
             </div>
             <div>
               <label htmlFor="arrivalCity">Arrival City</label>
-              <input
-                type="text"
-                name="arrivalCity"
+              <CityAutocomplete
                 id="arrivalCity"
-                onChange={(event) => changeInputTrainInfo(event, "arrivalCity")}
-                value={inputTrainInfo.arrivalCity}
+                displayValue={arrivalCityInput}
+                suggestions={arrivalSuggestions}
+                onInputChange={(text) => {
+                  setArrivalCityInput(text);
+                  setInputTrainInfo((p) => ({ ...p, arrivalCity: "" }));
+                  searchCityStations(
+                    text,
+                    setArrivalSuggestions,
+                    debounceArrCity,
+                  );
+                }}
+                onSelect={(station) => {
+                  setArrivalCityInput(station.name);
+                  setInputTrainInfo((p) => ({
+                    ...p,
+                    arrivalCity: station.name,
+                  }));
+                  setArrivalSuggestions([]);
+                }}
               />
               <label htmlFor="arrivalDate">Arrival Date</label>
               <input
@@ -262,6 +438,16 @@ export const EditCreateTrain: React.FunctionComponent = () => {
               />
             </div>
           </div>
+
+          <div className="routeSection">
+            <h3 className="routeSectionTitle">Route Stops</h3>
+            <p className="routeSectionHint">
+              Add intermediate stops, set arrival/departure times and drag to
+              reorder.
+            </p>
+            <RouteBuilder stops={stops} onChange={setStops} />
+          </div>
+
           <div className="formSubDiv">
             <button type="submit" className="submit">
               {trainId ? "Update Train" : "Create Train"}

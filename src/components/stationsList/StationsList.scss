@@ -1,0 +1,192 @@
+.stationsListDiv {
+  width: 80%;
+  max-width: 1100px;
+  padding: 30px 0 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.stationsHeader {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  h2 {
+    margin: 0;
+    font-size: 28px;
+    color: rgba(240, 141, 242);
+  }
+}
+
+.createStationBtn {
+  padding: 10px 22px;
+  border: 1px solid rgba(240, 141, 242);
+  border-radius: 10px;
+  color: rgba(240, 141, 242);
+  text-decoration: none;
+  font-size: 16px;
+  transition: all 0.3s;
+
+  &:hover {
+    background-color: rgba(240, 141, 242);
+    color: rgb(3, 22, 38);
+  }
+}
+
+.stationsFilters {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+
+  input,
+  select {
+    background-color: #303245;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: #eee;
+    font-size: 16px;
+    height: 44px;
+    outline: none;
+    padding: 0 16px;
+    transition: border-color 0.3s;
+
+    &:focus {
+      border-color: rgba(240, 141, 242, 0.6);
+    }
+  }
+
+  input {
+    flex: 1;
+    min-width: 200px;
+  }
+
+  select {
+    min-width: 160px;
+    cursor: pointer;
+    option {
+      background-color: #1a2040;
+    }
+  }
+}
+
+.filterBtn {
+  height: 44px;
+  padding: 0 24px;
+  border: 1px solid rgba(240, 141, 242);
+  border-radius: 10px;
+  background-color: transparent;
+  color: rgba(240, 141, 242);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.3s;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: rgba(240, 141, 242);
+    color: rgb(3, 22, 38);
+  }
+}
+
+.emptyMsg {
+  font-size: 20px;
+  margin-top: 20px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.stationsTable {
+  width: 100%;
+  background-color: #0b122d;
+  border: 1px solid rgba(240, 141, 242, 0.15);
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr;
+  padding: 14px 20px;
+  background-color: rgba(240, 141, 242, 0.06);
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(240, 141, 242, 0.8);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid rgba(240, 141, 242, 0.1);
+}
+
+.sortable {
+  cursor: pointer;
+  user-select: none;
+  &:hover {
+    color: rgba(240, 141, 242);
+  }
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.5fr 1fr 1fr;
+  padding: 14px 20px;
+  align-items: center;
+  font-size: 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+  transition: background-color 0.2s;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.03);
+  }
+}
+
+.codeTag {
+  display: inline-block;
+  color: rgba(240, 141, 242);
+  border-radius: 6px;
+  font-family: monospace;
+  font-size: 13px;
+}
+
+.rowActions {
+  display: flex;
+  gap: 10px;
+}
+
+.actionLink {
+  color: rgba(240, 141, 242);
+  text-decoration: none;
+  font-size: 14px;
+  padding: 4px 12px;
+  border: 1px solid rgba(240, 141, 242, 0.4);
+  border-radius: 6px;
+  transition: all 0.3s;
+
+  &:hover {
+    background-color: rgba(240, 141, 242, 0.1);
+    border-color: rgba(240, 141, 242);
+  }
+}
+
+.loadMoreBtn {
+  height: 42px;
+  padding: 0 36px;
+  border: 1px solid rgba(240, 141, 242);
+  border-radius: 10px;
+  font-size: 16px;
+  color: rgba(240, 141, 242);
+  background-color: transparent;
+  cursor: pointer;
+  transition: all 0.5s;
+  margin-top: 8px;
+
+  &:hover {
+    background-color: rgba(240, 141, 242);
+    color: rgb(3, 22, 38);
+  }
+}

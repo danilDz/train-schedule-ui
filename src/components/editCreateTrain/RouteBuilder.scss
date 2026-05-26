@@ -1,0 +1,256 @@
+.routeBuilder {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.routeBuilderEmpty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 20px;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 16px;
+}
+
+.stopsList {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.stopRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background-color: #0b122d;
+  border: 1px solid rgba(240, 141, 242, 0.15);
+  border-radius: 10px;
+  padding: 12px 14px;
+  transition: border-color 0.2s;
+
+  &--dragging {
+    border-color: rgba(240, 141, 242, 0.6);
+    box-shadow: 0 4px 20px rgba(240, 141, 242, 0.15);
+    background-color: #111828;
+  }
+}
+
+.dragHandle {
+  color: rgba(255, 255, 255, 0.3);
+  font-size: 20px;
+  cursor: grab;
+  padding: 0 4px;
+  line-height: 1;
+  user-select: none;
+  flex-shrink: 0;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.stopIndex {
+  width: 22px;
+  height: 22px;
+  background-color: rgba(240, 141, 242, 0.15);
+  color: rgba(240, 141, 242);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.stopStationField {
+  flex: 1;
+  position: relative;
+  min-width: 0;
+}
+
+.stopStationField,
+.stopPlatform {
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #303245;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #eee;
+    font-size: 15px;
+    height: 38px;
+    outline: none;
+    padding: 0 12px;
+    transition: border-color 0.3s;
+
+    &:focus {
+      border-color: rgba(240, 141, 242, 0.5);
+    }
+  }
+}
+
+.suggestionsList {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background-color: #1a2040;
+  border: 1px solid rgba(240, 141, 242, 0.3);
+  border-radius: 8px;
+  list-style: none;
+  margin: 0;
+  padding: 4px 0;
+  max-height: 200px;
+  overflow-y: auto;
+
+  li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 14px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: rgba(240, 141, 242, 0.08);
+    }
+  }
+}
+
+.suggName {
+  flex: 1;
+  color: white;
+}
+
+.suggCode {
+  font-family: monospace;
+  font-size: 12px;
+  background-color: rgba(240, 141, 242, 0.1);
+  color: rgba(240, 141, 242);
+  padding: 1px 7px;
+  border-radius: 4px;
+}
+
+.suggCity {
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+}
+
+.stopTimes {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.timeField {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+
+  label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+  }
+
+  input[type="time"] {
+    background-color: #303245;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #eee;
+    font-size: 14px;
+    height: 36px;
+    outline: none;
+    padding: 0 8px;
+    width: 90px;
+    cursor: pointer;
+    transition: border-color 0.3s;
+
+    &:focus {
+      border-color: rgba(240, 141, 242, 0.5);
+    }
+
+    &::-webkit-calendar-picker-indicator {
+      filter: invert(0.8);
+    }
+  }
+}
+
+.stopPlatform {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  flex-shrink: 0;
+  width: 72px;
+
+  label {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+  }
+
+  input[type="number"] {
+    width: 100%;
+    background-color: #303245;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+    color: #eee;
+    font-size: 14px;
+    height: 36px;
+    outline: none;
+    padding: 0 10px;
+    text-align: center;
+    transition: border-color 0.3s;
+    box-sizing: border-box;
+
+    &:focus {
+      border-color: rgba(240, 141, 242, 0.5);
+    }
+
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+  }
+}
+
+.removeStopBtn {
+  background: transparent;
+  border: none;
+  color: rgba(248, 113, 113, 0.6);
+  font-size: 16px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  transition: color 0.2s;
+
+  &:hover {
+    color: #f87171;
+  }
+}
+
+.addStopBtn {
+  align-self: flex-start;
+  background: transparent;
+  border: 1px dashed rgba(240, 141, 242, 0.4);
+  border-radius: 10px;
+  color: rgba(240, 141, 242, 0.8);
+  cursor: pointer;
+  font-size: 15px;
+  padding: 10px 22px;
+  transition: all 0.3s;
+
+  &:hover {
+    border-color: rgba(240, 141, 242);
+    color: rgba(240, 141, 242);
+    background-color: rgba(240, 141, 242, 0.05);
+  }
+}

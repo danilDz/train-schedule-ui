@@ -1,0 +1,90 @@
+.editStationDiv {
+  width: 100%;
+  min-height: calc(100vh - 160px);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 40px;
+}
+
+.editStationForm {
+  width: 90%;
+  max-width: 760px;
+  background-color: #0b122d;
+  border: 1px solid rgba(240, 141, 242, 0.2);
+  border-radius: 16px;
+  padding: 36px 40px 40px;
+
+  h2 {
+    margin: 0 0 30px;
+    font-size: 24px;
+    color: rgba(240, 141, 242);
+  }
+}
+
+.stFieldsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 30px;
+  margin-bottom: 32px;
+
+  @media (max-width: 580px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stField {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  label {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.6);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+  }
+
+  input {
+    background-color: #303245;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    color: #eee;
+    font-size: 16px;
+    height: 48px;
+    outline: none;
+    padding: 0 16px;
+    transition: border-color 0.3s;
+    width: 100%;
+    box-sizing: border-box;
+
+    &:focus {
+      border-color: rgba(240, 141, 242, 0.6);
+    }
+
+    &.invalidInput {
+      border-color: #f87171;
+    }
+
+    /* hide number spinner */
+    &[type="number"]::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+  }
+}
+
+.submitBtn {
+  background-color: #08d;
+  border: none;
+  border-radius: 12px;
+  color: white;
+  cursor: pointer;
+  font-size: 18px;
+  height: 50px;
+  width: 100%;
+  transition: background-color 0.3s;
+
+  &:active {
+    background-color: #06b;
+  }
+}

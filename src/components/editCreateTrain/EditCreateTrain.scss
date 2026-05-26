@@ -79,3 +79,89 @@
     }
   }
 }
+
+.routeSection {
+  width: 80%;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.routeSectionTitle {
+  margin: 0;
+  font-size: 18px;
+  color: rgba(240, 141, 242);
+}
+
+.routeSectionHint {
+  margin: 0;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.cityAutocomplete {
+  position: relative;
+  width: 100% !important;
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #303245;
+    border-radius: 12px;
+    border: 0;
+    color: #eee;
+    font-size: 18px;
+    height: 50px;
+    outline: 0;
+    padding: 0 20px;
+  }
+
+  &:focus-within input {
+    border: 1px solid rgba(240, 141, 242, 0.6);
+  }
+
+  .invalidInput {
+    border: 1px solid red !important;
+  }
+
+  .citySuggestionsList {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    z-index: 200;
+    background-color: #1a2040;
+    border: 1px solid rgba(240, 141, 242, 0.35);
+    border-radius: 10px;
+    list-style: none;
+    margin: 0;
+    padding: 4px 0;
+    max-height: 200px;
+    overflow-y: auto;
+
+    li {
+      padding: 10px 16px;
+      cursor: pointer;
+      font-size: 15px;
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      transition: background-color 0.15s;
+
+      &:hover {
+        background-color: rgba(240, 141, 242, 0.12);
+      }
+    }
+
+    .csName {
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .csCity {
+      color: rgba(240, 141, 242, 0.8);
+      font-size: 13px;
+    }
+  }
+}

@@ -11,6 +11,11 @@ import { Account } from "./components/account/Account";
 import { NotFound } from "./components/notFound/NotFound";
 import { Train } from "./components/train/Train";
 import { EditCreateTrain } from "./components/editCreateTrain/EditCreateTrain";
+import { Dashboard } from "./components/dashboard/Dashboard";
+import { StationsList } from "./components/stationsList/StationsList";
+import { Station } from "./components/station/Station";
+import { EditCreateStation } from "./components/editCreateStation/EditCreateStation";
+import { JourneySearch } from "./components/journeySearch/JourneySearch";
 
 const App: React.FunctionComponent = () => {
   return (
@@ -19,9 +24,15 @@ const App: React.FunctionComponent = () => {
         <Routes>
           <Route path="/" element={<Header />}>
             <Route index element={<Trains />} />
+            <Route path="dashboard" element={<Dashboard />} />
             <Route path="trains/:trainId" element={<Train />} />
             <Route path="trains/edit/:trainId" element={<EditCreateTrain />} />
             <Route path="trains/create" element={<EditCreateTrain />} />
+            <Route path="stations" element={<StationsList />} />
+            <Route path="stations/create" element={<EditCreateStation />} />
+            <Route path="stations/edit/:stationId" element={<EditCreateStation />} />
+            <Route path="stations/:stationId" element={<Station />} />
+            <Route path="search" element={<JourneySearch />} />
             <Route path="account" element={<Account />} />
             <Route path="*" element={<NotFound />} />
           </Route>

@@ -1,0 +1,135 @@
+.stationDetailDiv {
+  width: 80%;
+  max-width: 700px;
+  padding: 30px 0 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.backLink {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: rgba(240, 141, 242);
+  text-decoration: none;
+  font-size: 16px;
+  border: 1px solid rgba(240, 141, 242);
+  padding: 8px 18px;
+  border-radius: 10px;
+  transition: all 0.3s;
+
+  svg { flex-shrink: 0; }
+
+  &:hover {
+    background-color: rgba(240, 141, 242);
+    color: rgb(3, 22, 38);
+    svg path { fill: rgb(3, 22, 38); }
+  }
+
+  svg path { transition: fill 0.3s; }
+}
+
+.stationCard {
+  width: 100%;
+  background-color: #0b122d;
+  border: 1px solid rgba(240, 141, 242, 0.2);
+  border-radius: 16px;
+  padding: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.stationCardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  h2 {
+    margin: 0;
+    font-size: 26px;
+    color: rgba(240, 141, 242);
+  }
+}
+
+.stationCodeBig {
+  background-color: rgba(240, 141, 242, 0.12);
+  color: rgba(240, 141, 242);
+  padding: 6px 18px;
+  border-radius: 8px;
+  font-family: monospace;
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+.stationFields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+
+  @media (max-width: 500px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.stationField {
+  background-color: rgba(255, 255, 255, 0.04);
+  border-radius: 10px;
+  padding: 14px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fieldLabel {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.fieldValue {
+  font-size: 18px;
+  color: white;
+}
+
+.stationControls {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.stationBtn {
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  transition: all 0.3s;
+  border: 1px solid;
+
+  &--edit {
+    color: rgba(240, 141, 242);
+    border-color: rgba(240, 141, 242);
+    background-color: transparent;
+    &:hover {
+      background-color: rgba(240, 141, 242);
+      color: rgb(3, 22, 38);
+    }
+  }
+
+  &--delete {
+    color: #f87171;
+    border-color: #f87171;
+    background-color: transparent;
+    &:hover {
+      background-color: rgba(248, 113, 113, 0.1);
+    }
+  }
+}

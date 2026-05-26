@@ -1,14 +1,21 @@
 .mainTrainInfoDiv {
   margin-top: 20px;
   width: 100%;
-  height: calc(100vh - 180px);
   display: flex;
   justify-content: flex-start;
   align-items: center;
   flex-direction: column;
   font-size: 20px;
 
-  a {
+  .backLink {
+    padding: 8px;
+  }
+
+  a,
+  button.controlBtn {
+    background-color: transparent;
+    font-family: inherit;
+    font-size: inherit;
     width: 130px;
     height: 50px;
     border: 1px solid rgba(240, 141, 242);
@@ -131,6 +138,215 @@
           background-color: rgb(255, 0, 140);
           color: rgb(3, 22, 38);
         }
+      }
+    }
+  }
+}
+
+// ── Status row ────────────────────────────────────────────────────────────────
+.trainStatusRow {
+  margin-bottom: 16px;
+}
+
+// ── Stops timeline ────────────────────────────────────────────────────────────
+.stopsSection {
+  width: 60%;
+  margin: 20px 0;
+
+  @media (max-width: 768px) {
+    width: 90%;
+  }
+}
+
+.stopsSectionTitle {
+  font-size: 18px;
+  color: rgba(240, 141, 242);
+  margin: 0 0 14px;
+}
+
+.stopsTimeline {
+  display: flex;
+  flex-direction: column;
+}
+
+.timelineStop {
+  display: flex;
+  gap: 14px;
+}
+
+.timelineMarker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.timelineDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(240, 141, 242);
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+
+.timelineLine {
+  width: 2px;
+  flex: 1;
+  min-height: 24px;
+  background-color: rgba(240, 141, 242, 0.25);
+  margin: 4px 0;
+}
+
+.timelineContent {
+  padding-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.timelineStation {
+  font-size: 16px;
+  font-weight: 600;
+  color: white;
+}
+
+.timelineTimes {
+  display: flex;
+  gap: 14px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.45);
+}
+
+// ── Status update modal ────────────────────────────────────────────────────────
+.statusModalOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(3, 22, 38, 0.85);
+  backdrop-filter: blur(2px);
+}
+
+.statusModal {
+  background-color: #0b122d;
+  border: 1px solid rgba(240, 141, 242, 0.4);
+  border-radius: 16px;
+  padding: 30px 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 360px;
+
+  h3 {
+    margin: 0;
+    font-size: 20px;
+    color: rgba(240, 141, 242);
+  }
+}
+
+.statusOptions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.statusOptionBtn {
+  padding: 12px 18px;
+  border-radius: 10px;
+  font-size: 15px;
+  cursor: pointer;
+  background-color: transparent;
+  border: 1px solid;
+  text-align: left;
+  transition: all 0.2s;
+
+  &--on_time {
+    color: #4ade80;
+    border-color: rgba(74, 222, 128, 0.3);
+    &:hover,
+    &.active {
+      background-color: rgba(74, 222, 128, 0.1);
+      border-color: #4ade80;
+    }
+  }
+  &--delayed {
+    color: #fb923c;
+    border-color: rgba(251, 146, 60, 0.3);
+    &:hover,
+    &.active {
+      background-color: rgba(251, 146, 60, 0.1);
+      border-color: #fb923c;
+    }
+  }
+  &--cancelled {
+    color: #f87171;
+    border-color: rgba(248, 113, 113, 0.3);
+    &:hover,
+    &.active {
+      background-color: rgba(248, 113, 113, 0.1);
+      border-color: #f87171;
+    }
+  }
+}
+
+.delayInput {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  label {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  input {
+    background-color: #303245;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    color: #eee;
+    font-size: 16px;
+    height: 42px;
+    outline: none;
+    padding: 0 14px;
+    width: 100%;
+    box-sizing: border-box;
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+    }
+    &:focus {
+      border-color: rgba(240, 141, 242, 0.6);
+    }
+  }
+}
+
+.statusModalButtons {
+  display: flex;
+  gap: 12px;
+
+  .confirmBtn {
+    flex: 1;
+    height: 44px;
+    border-radius: 10px;
+    font-size: 16px;
+    border: 1px solid;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: transparent;
+
+    &--cancel {
+      color: rgba(240, 141, 242);
+      border-color: rgba(240, 141, 242);
+      &:hover {
+        background-color: rgba(240, 141, 242, 0.1);
+      }
+    }
+    &--confirm {
+      color: #4ade80;
+      border-color: #4ade80;
+      &:hover {
+        background-color: rgba(74, 222, 128, 0.1);
       }
     }
   }
