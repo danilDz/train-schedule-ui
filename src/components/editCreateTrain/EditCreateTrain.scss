@@ -1,6 +1,5 @@
 .mainEditCreateTrainDiv {
   width: 100%;
-  height: calc(100vh - 160px);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -76,6 +75,134 @@
           }
         }
       }
+    }
+  }
+}
+
+// ── Carriage Builder ──────────────────────────────────────────────────────────
+.carriageSection {
+  width: 100%;
+  max-width: 900px;
+  margin: 24px auto 48px;
+  padding: 20px 24px;
+  background: #1e1e2e;
+  border: 1px solid #2d2d42;
+  border-radius: 10px;
+
+  .carriageSectionHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+  }
+
+  .carriageSectionTitle {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #e2e2f0;
+    margin: 0 0 4px;
+  }
+
+  .carriageSectionHint {
+    font-size: 0.8rem;
+    color: #888;
+    margin: 0;
+  }
+
+  .carriageTotalBadge {
+    font-size: 0.85rem;
+    color: #a0a0c0;
+    background: #2a2a3e;
+    padding: 4px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+
+    strong {
+      color: #7c6af5;
+    }
+  }
+
+  .carriageList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .carriageRow {
+    display: flex;
+    align-items: flex-end;
+    gap: 14px;
+    background: #25253a;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #33334a;
+  }
+
+  .carriageRowField {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+
+    label {
+      font-size: 0.75rem;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    input,
+    select {
+      background: #1a1a2e;
+      border: 1px solid #3a3a55;
+      border-radius: 6px;
+      color: #e0e0f0;
+      padding: 6px 10px;
+      font-size: 0.9rem;
+      min-width: 80px;
+
+      &:focus {
+        outline: none;
+        border-color: #7c6af5;
+      }
+    }
+
+    select {
+      min-width: 130px;
+    }
+  }
+
+  .carriageRemoveBtn {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid #55324a;
+    color: #cc6666;
+    border-radius: 6px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s;
+
+    &:hover {
+      background: #3a1a2a;
+    }
+  }
+
+  .addCarriageBtn {
+    background: #2e2e4a;
+    border: 1px dashed #5555aa;
+    color: #9090d0;
+    border-radius: 8px;
+    padding: 8px 18px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: background 0.2s, color 0.2s;
+    width: 100%;
+
+    &:hover {
+      background: #383858;
+      color: #c0c0f0;
     }
   }
 }

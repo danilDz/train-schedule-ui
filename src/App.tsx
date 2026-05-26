@@ -16,6 +16,9 @@ import { StationsList } from "./components/stationsList/StationsList";
 import { Station } from "./components/station/Station";
 import { EditCreateStation } from "./components/editCreateStation/EditCreateStation";
 import { JourneySearch } from "./components/journeySearch/JourneySearch";
+import { MyBookings } from "./components/myBookings/MyBookings";
+import { BookingSuccess } from "./components/bookingSuccess/BookingSuccess";
+import { BookingCancel } from "./components/bookingCancel/BookingCancel";
 
 const App: React.FunctionComponent = () => {
   return (
@@ -33,6 +36,9 @@ const App: React.FunctionComponent = () => {
             <Route path="stations/edit/:stationId" element={<EditCreateStation />} />
             <Route path="stations/:stationId" element={<Station />} />
             <Route path="search" element={<JourneySearch />} />
+            <Route path="bookings" element={<MyBookings />} />
+            <Route path="booking/success" element={<BookingSuccess />} />
+            <Route path="booking/cancel" element={<BookingCancel />} />
             <Route path="account" element={<Account />} />
             <Route path="*" element={<NotFound />} />
           </Route>

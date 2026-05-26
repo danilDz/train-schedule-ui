@@ -258,5 +258,121 @@ export class ApiService {
     });
     return await response.json();
   }
+
+  // ── Seats / Carriages ─────────────────────────────────────────────────────
+  static async getTrainSeats(trainId: string) {
+    const response = await fetch(
+      `${this.url}/api/trains/${trainId}/seats`,
+      { headers: { Authorization: `Bearer ${Cookies.get("jwt")}` } }
+    );
+    return await response.json();
+  }
+
+  static async getTrainCarriages(trainId: string) {
+    const response = await fetch(
+      `${this.url}/api/trains/${trainId}/carriages`,
+      { headers: { Authorization: `Bearer ${Cookies.get("jwt")}` } }
+    );
+    return await response.json();
+  }
+
+  static async createCarriage(
+    trainId: string,
+    data: { carriageNumber: number; type: string; totalSeats: number }
+  ) {
+    const response = await fetch(`${this.url}/api/trains/${trainId}/carriages`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    return await response.json();
+  }
+
+  static async updateCarriage(
+    id: string,
+    data: { carriageNumber?: number; type?: string; totalSeats?: number }
+  ) {
+    const response = await fetch(`${this.url}/api/carriages/${id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    return await response.json();
+  }
+
+  static async deleteCarriage(id: string) {
+    const response = await fetch(`${this.url}/api/carriages/${id}`, {
+      method: "DELETE",
+      headers: { Authorization: `Bearer ${Cookies.get("jwt")}` },
+    });
+    if (response.status === 204) return {};
+    return await response.json();
+  }
+
+  // ── Bookings ──────────────────────────────────────────────────────────────
+  static async reserveSeat(seatId: string) {
+    const response = await fetch(`${this.url}/api/bookings/reserve`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${Cookies.get("jwt")}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ seatId }),
+    });
+    return await response.json();
+  }
+
+  static async getMyBookings() {
+    const response = await fetch(`${this.url}/api/bookings/my`, {
+      headers: { Authorization: `Bearer ${Cookies.get("jwt")}` },
+    });
+    return await response.json();
+  }
+
+  static async getBookingById(id: string) {
+    const response = await fetch(`${this.url}/api/bookings/${id}`, {
+      headers: { Authorization: `Bearer ${Cookies.get("jwt")}` },
+    });
+    return await response.json();
+  }
+
+  static async cancelBooking(id: string) {
+    const response = await fetch(`${this.url}/api/bookings/${id}/cancel`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${Cookies.get("jwt")}` },
+    });
+    return await response.json();
+  }
+
+  // ── Payments ──────────────────────────────────────────────────────────────
+  static async createCheckoutSession(bookingId: string) {
+    const response = await fetch(
+      `${this.url}/api/payments/create-checkout-session`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${Cookies.get("jwt")}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ bookingId }),
+      }
+    );
+    return await response.json();
+  }
+
+  // ── Tickets ───────────────────────────────────────────────────────────────
+  static async getTicketByBookingId(bookingId: string) {
+    const response = await fetch(
+      `${this.url}/api/tickets/booking/${bookingId}`,
+      { headers: { Authorization: `Bearer ${Cookies.get("jwt")}` } }
+    );
+    return await response.json();
+  }
 }
 

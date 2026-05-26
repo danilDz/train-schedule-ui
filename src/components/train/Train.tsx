@@ -9,6 +9,7 @@ import { Error } from "../error/Error";
 import { Spinner } from "../spinner/Spinner";
 import { StatusBadge } from "../shared/StatusBadge";
 import { ConfirmModal } from "../shared/ConfirmModal";
+import { SeatMap, ICarriage, ISeat } from "../seatMap/SeatMap";
 import { statusCodesForLogout } from "../../variables";
 
 export const Train: React.FunctionComponent = () => {
@@ -16,12 +17,18 @@ export const Train: React.FunctionComponent = () => {
   const [trainInfo, setTrainInfo] = useState<ITrain>({} as ITrain);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isDispatcher, setIsDispatcher] = useState<boolean>(false);
+  const [isPassenger, setIsPassenger] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
   const [pendingStatus, setPendingStatus] = useState<TrainStatus>("ON_TIME");
   const [delayMinutes, setDelayMinutes] = useState("");
+
+  // Booking state
+  const [carriages, setCarriages] = useState<ICarriage[]>([]);
+  const [selectedSeat, setSelectedSeat] = useState<ISeat | null>(null);
+  const [isBooking, setIsBooking] = useState(false);
 
   const navigate = useNavigate();
   const logout = useLogout();
@@ -47,8 +54,17 @@ export const Train: React.FunctionComponent = () => {
       const role = user.role ?? (user.isAdmin ? "ADMIN" : "PASSENGER");
       setIsAdmin(role === "ADMIN");
       setIsDispatcher(role === "ADMIN" || role === "DISPATCHER");
+      const passenger = role === "PASSENGER";
+      setIsPassenger(passenger);
       setTrainInfo(loadedTrainInfo);
       setIsLoading(false);
+
+      if (passenger) {
+        const seatsData = await ApiService.getTrainSeats(trainId!);
+        if (!seatsData.statusCode && Array.isArray(seatsData)) {
+          setCarriages(seatsData);
+        }
+      }
     }
     fetchTrainInfo();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -89,6 +105,30 @@ export const Train: React.FunctionComponent = () => {
         pendingStatus === "DELAYED" ? Number(delayMinutes) : undefined,
     }));
     toast.success("Train status updated!");
+  }
+
+  async function onBookSeat() {
+    if (!selectedSeat) return;
+    setIsBooking(true);
+    try {
+      const booking = await ApiService.reserveSeat(selectedSeat.id);
+      if (booking.statusCode) {
+        if (statusCodesForLogout.includes(booking.statusCode)) logout();
+        toast.error(booking.message ?? "Failed to reserve seat.");
+        setIsBooking(false);
+        return;
+      }
+      const session = await ApiService.createCheckoutSession(booking.id);
+      if (session.statusCode) {
+        toast.error(session.message ?? "Failed to create payment session.");
+        setIsBooking(false);
+        return;
+      }
+      window.location.href = session.url;
+    } catch {
+      toast.error("An unexpected error occurred.");
+      setIsBooking(false);
+    }
   }
 
   if (isError) return <Error />;
@@ -157,6 +197,34 @@ export const Train: React.FunctionComponent = () => {
 
         <p>Available seats: {trainInfo.availableSeats}</p>
         <p>Price: ${trainInfo.price}</p>
+
+        {trainInfo.carriages && trainInfo.carriages.length > 0 && (() => {
+          const summary = trainInfo.carriages.reduce(
+            (acc: Record<string, number>, c: any) => {
+              const label =
+                c.type === "FIRST_CLASS"
+                  ? "First Class"
+                  : c.type === "BUSINESS"
+                  ? "Business"
+                  : "Economy";
+              acc[label] = (acc[label] || 0) + (c.seats?.length ?? c.totalSeats ?? 0);
+              return acc;
+            },
+            {} as Record<string, number>,
+          );
+          return (
+            <div className="carriageSummary">
+              <p className="carriageSummaryTitle">Train Composition</p>
+              <div className="carriageSummaryItems">
+                {Object.entries(summary).map(([label, seats]) => (
+                  <span key={label} className="carriageSummaryItem">
+                    {label}: <strong>{seats as number}</strong> seats
+                  </span>
+                ))}
+              </div>
+            </div>
+          );
+        })()}
 
         {trainInfo.stops && trainInfo.stops.length > 0 && (
           <div className="stopsSection">
@@ -283,6 +351,33 @@ export const Train: React.FunctionComponent = () => {
               </button>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* Seat booking section for passengers */}
+      {isPassenger && trainInfo.status !== "CANCELLED" && (
+        <div className="seatBookingSection">
+          <h3 className="seatBookingTitle">Book a Seat</h3>
+          <SeatMap
+            carriages={carriages}
+            selectedSeatId={selectedSeat?.id ?? null}
+            onSeatSelect={(seat) => setSelectedSeat(seat)}
+          />
+          {selectedSeat && (
+            <div className="seatBookingActions">
+              <p className="selectedSeatInfo">
+                Selected: <strong>Seat {selectedSeat.seatNumber}</strong>{" "}
+                ({selectedSeat.class})
+              </p>
+              <button
+                className="controlBtn bookBtn"
+                onClick={onBookSeat}
+                disabled={isBooking}
+              >
+                {isBooking ? "Processing…" : "Reserve & Pay"}
+              </button>
+            </div>
+          )}
         </div>
       )}
     </>

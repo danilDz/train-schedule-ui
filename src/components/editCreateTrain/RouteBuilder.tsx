@@ -8,6 +8,7 @@ import { ApiService } from "../../services/api.service";
 interface RouteBuilderProps {
   stops: IRouteStop[];
   onChange: (stops: IRouteStop[]) => void;
+  showErrors?: boolean;
 }
 
 interface StationSuggestion extends IStation {}
@@ -21,7 +22,7 @@ const emptyStop = (): IRouteStop => ({
   stopOrder: 0,
 });
 
-export const RouteBuilder: React.FC<RouteBuilderProps> = ({ stops, onChange }) => {
+export const RouteBuilder: React.FC<RouteBuilderProps> = ({ stops, onChange, showErrors }) => {
   const [suggestions, setSuggestions] = useState<StationSuggestion[]>([]);
   const [activeIdx, setActiveIdx] = useState<number | null>(null);
   const debounceRef = useRef<ReturnType<typeof setTimeout>>();
@@ -71,7 +72,7 @@ export const RouteBuilder: React.FC<RouteBuilderProps> = ({ stops, onChange }) =
   }
 
   function selectSuggestion(index: number, station: StationSuggestion) {
-    updateStop(index, { stationId: station.id, stationName: station.name });
+    updateStop(index, { stationId: station.id, stationName: station.name, stationPlatformCount: station.platformCount });
     setSuggestions([]);
     setActiveIdx(null);
   }
@@ -136,6 +137,7 @@ export const RouteBuilder: React.FC<RouteBuilderProps> = ({ stops, onChange }) =
                           type="text"
                           placeholder="Station name…"
                           value={stop.stationName}
+                          className={showErrors && !stop.stationId ? "invalidInput" : ""}
                           onChange={(e) =>
                             onStationNameChange(index, e.target.value)
                           }
@@ -165,6 +167,7 @@ export const RouteBuilder: React.FC<RouteBuilderProps> = ({ stops, onChange }) =
                           <input
                             type="time"
                             value={stop.arrivalTime}
+                            className={showErrors && !stop.arrivalTime ? "invalidInput" : ""}
                             onChange={(e: ChangeEvent<HTMLInputElement>) =>
                               updateStop(index, { arrivalTime: e.target.value })
                             }
@@ -175,6 +178,7 @@ export const RouteBuilder: React.FC<RouteBuilderProps> = ({ stops, onChange }) =
                           <input
                             type="time"
                             value={stop.departureTime}
+                            className={showErrors && !stop.departureTime ? "invalidInput" : ""}
                             onChange={(e: ChangeEvent<HTMLInputElement>) =>
                               updateStop(index, { departureTime: e.target.value })
                             }
@@ -186,10 +190,18 @@ export const RouteBuilder: React.FC<RouteBuilderProps> = ({ stops, onChange }) =
                       <div className="stopPlatform">
                         <label>Platform</label>
                         <input
-                          type="text"
+                          type="number"
                           placeholder="—"
-                          maxLength={10}
+                          min={1}
+                          max={stop.stationPlatformCount || undefined}
                           value={stop.platform ?? ""}
+                          className={
+                            (showErrors && !stop.platform)
+                              ? "invalidInput"
+                              : (stop.platform && stop.stationPlatformCount && parseInt(stop.platform) > stop.stationPlatformCount)
+                                ? "invalidInput"
+                                : ""
+                          }
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             updateStop(index, {
                               platform: e.target.value || undefined,

@@ -32,4 +32,5 @@ export type ITrain = {
   status?: TrainStatus;
   delayMinutes?: number;
   stops?: ITrainStop[];
+  carriages?: any[];
 }

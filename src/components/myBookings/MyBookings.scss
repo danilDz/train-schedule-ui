@@ -1,0 +1,166 @@
+.myBookings {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 1.5rem;
+
+  &__title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: #f08df2;
+    margin-bottom: 1.5rem;
+  }
+
+  &__empty {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #aaa;
+
+    p {
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+  }
+
+  &__browseBtn {
+    background: #f08df2;
+    color: #1a1a2e;
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+}
+
+.bookingCard {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  padding: 1.25rem;
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+  }
+
+  &__route {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #e0e0e0;
+  }
+
+  &__arrow {
+    margin: 0 0.5rem;
+    color: #f08df2;
+  }
+
+  &__badge {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+
+    &.badge--pending {
+      background: rgba(255, 193, 7, 0.2);
+      color: #ffc107;
+    }
+    &.badge--confirmed {
+      background: rgba(72, 200, 120, 0.2);
+      color: #48c878;
+    }
+    &.badge--cancelled {
+      background: rgba(220, 53, 69, 0.2);
+      color: #dc3545;
+    }
+    &.badge--expired {
+      background: rgba(150, 150, 150, 0.2);
+      color: #999;
+    }
+    &.badge--refunded {
+      background: rgba(100, 149, 237, 0.2);
+      color: #6495ed;
+    }
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  &__detailRow {
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.88rem;
+    color: #ccc;
+  }
+
+  &__label {
+    width: 80px;
+    flex-shrink: 0;
+    color: #888;
+  }
+
+  &__ticket {
+    font-family: monospace;
+    color: #f08df2;
+    font-weight: 600;
+  }
+
+  &__expiry {
+    color: #ffc107;
+  }
+
+  &__actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  &__btn {
+    padding: 0.45rem 1.1rem;
+    border-radius: 6px;
+    border: none;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    &--pay {
+      background: #48c878;
+      color: #1a1a2e;
+    }
+
+    &--cancel {
+      background: rgba(220, 53, 69, 0.2);
+      color: #dc3545;
+      border: 1px solid rgba(220, 53, 69, 0.4);
+
+      &:hover:not(:disabled) {
+        background: rgba(220, 53, 69, 0.35);
+      }
+    }
+  }
+}

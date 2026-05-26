@@ -90,6 +90,10 @@
     &:focus {
       border-color: rgba(240, 141, 242, 0.5);
     }
+
+    &.invalidInput {
+      border-color: rgba(248, 113, 113, 0.7);
+    }
   }
 }
 
@@ -179,6 +183,10 @@
 
     &::-webkit-calendar-picker-indicator {
       filter: invert(0.8);
+    }
+
+    &.invalidInput {
+      border-color: rgba(248, 113, 113, 0.7);
     }
   }
 }

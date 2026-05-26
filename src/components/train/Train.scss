@@ -148,6 +148,44 @@
   margin-bottom: 16px;
 }
 
+// ── Carriage composition summary ─────────────────────────────────────────────
+.carriageSummary {
+  margin: 12px 0 4px;
+  padding: 10px 16px;
+  background: #1e1e2e;
+  border: 1px solid #2d2d42;
+  border-radius: 8px;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.carriageSummaryTitle {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #888;
+  margin: 0;
+}
+
+.carriageSummaryItems {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.carriageSummaryItem {
+  font-size: 0.85rem;
+  color: #b0b0d0;
+  background: #25253a;
+  padding: 3px 10px;
+  border-radius: 5px;
+
+  strong {
+    color: #9090e8;
+  }
+}
+
 // ── Stops timeline ────────────────────────────────────────────────────────────
 .stopsSection {
   width: 60%;
@@ -349,5 +387,52 @@
         background-color: rgba(74, 222, 128, 0.1);
       }
     }
+  }
+}
+
+.seatBookingSection {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0 1rem 2rem;
+}
+
+.seatBookingTitle {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #f08df2;
+  margin-bottom: 1rem;
+}
+
+.seatBookingActions {
+  margin-top: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.selectedSeatInfo {
+  color: #ccc;
+  font-size: 0.9rem;
+}
+
+.bookBtn {
+  background: #f08df2;
+  color: #1a1a2e;
+  border: none;
+  border-radius: 6px;
+  padding: 0.55rem 1.5rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: opacity 0.2s;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  &:hover:not(:disabled) {
+    opacity: 0.85;
   }
 }

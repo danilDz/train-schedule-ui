@@ -45,6 +45,11 @@ export const Navigation: React.FunctionComponent = () => {
           Add Train
         </Link>
       )}
+      {role === "PASSENGER" && (
+        <Link to="/bookings" className={active("/bookings")}>
+          My Bookings
+        </Link>
+      )}
       <Link to="/account" className={active("/account")}>
         Account
       </Link>

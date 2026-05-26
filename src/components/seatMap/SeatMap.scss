@@ -1,0 +1,117 @@
+.seatMap {
+  margin-top: 2rem;
+
+  &__empty {
+    color: #aaa;
+    font-style: italic;
+  }
+
+  &__carriage {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  &__carriageHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  &__carriageNumber {
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: #f08df2;
+  }
+
+  &__carriageType {
+    font-size: 0.75rem;
+    background: rgba(240, 141, 242, 0.15);
+    color: #f08df2;
+    border-radius: 4px;
+    padding: 2px 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__seats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  &__seat {
+    width: 44px;
+    height: 44px;
+    border-radius: 6px;
+    border: 2px solid transparent;
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: transform 0.1s, border-color 0.15s;
+
+    &--available {
+      background: rgba(72, 200, 120, 0.2);
+      border-color: #48c878;
+      color: #48c878;
+
+      &:hover:not(:disabled) {
+        background: rgba(72, 200, 120, 0.35);
+        transform: scale(1.08);
+      }
+    }
+
+    &--taken {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.15);
+      color: #555;
+      cursor: not-allowed;
+    }
+
+    &--selected {
+      background: rgba(240, 141, 242, 0.3) !important;
+      border-color: #f08df2 !important;
+      color: #f08df2 !important;
+      transform: scale(1.1);
+    }
+  }
+
+  &__legend {
+    display: flex;
+    gap: 1.25rem;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+    color: #aaa;
+  }
+
+  &__legendItem {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  &__legendDot {
+    width: 14px;
+    height: 14px;
+    border-radius: 3px;
+    border: 2px solid transparent;
+
+    &--available {
+      background: rgba(72, 200, 120, 0.2);
+      border-color: #48c878;
+    }
+
+    &--taken {
+      background: rgba(255, 255, 255, 0.05);
+      border-color: rgba(255, 255, 255, 0.15);
+    }
+
+    &--selected {
+      background: rgba(240, 141, 242, 0.3);
+      border-color: #f08df2;
+    }
+  }
+}
